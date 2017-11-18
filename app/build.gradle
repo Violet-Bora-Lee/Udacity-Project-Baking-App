@@ -35,5 +35,8 @@ dependencies {
 
     compile 'com.google.code.gson:gson:2.2.4'
 
+//    Default colors and dimens per Material Design Guideline
+    compile 'com.dmitrymalkovich.android:material-design-dimens:1.4'
+
     testCompile 'junit:junit:4.12'
 }

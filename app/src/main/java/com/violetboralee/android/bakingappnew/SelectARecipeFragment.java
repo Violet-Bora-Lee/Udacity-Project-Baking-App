@@ -22,8 +22,6 @@ import java.util.List;
 
 public class SelectARecipeFragment extends Fragment {
 
-    private static final String FETCHED_RAW_JSON = "recipes";
-
     private RecyclerView mRecipeRecyclerView;
     private RecipeAdapter mAdapter;
 
@@ -120,14 +118,5 @@ public class SelectARecipeFragment extends Fragment {
         }
 
     }
-//
-//    public static SelectARecipeFragment newInstnace(int recipeId) {
-//        Bundle args = new Bundle();
-//        args.putInt(ARG_RECIPE_ID, recipeId);
-//
-//        SelectARecipeFragment fragment = new SelectARecipeFragment();
-//        fragment.setArguments(args);
-//
-//        return fragment;
-//    }
+
 }

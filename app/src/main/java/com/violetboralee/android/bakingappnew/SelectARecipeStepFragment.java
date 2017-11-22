@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.violetboralee.android.bakingappnew.model.Ingredient;
 import com.violetboralee.android.bakingappnew.model.RecipeLab;
 import com.violetboralee.android.bakingappnew.model.Step;
+import com.violetboralee.android.bakingappnew.util.TextUtil;
 
 import java.util.List;
 
@@ -103,12 +104,21 @@ public class SelectARecipeStepFragment extends Fragment {
 
         public void bindIngredient(Ingredient ingredient) {
             mIngredient = ingredient;
-            Double quantity = mIngredient.getQuantity();
-            String measure = mIngredient.getMeasure();
-            String ingredientDetail = mIngredient.getIngredient();
 
-            String combinedIngredient = String.format(getResources()
-                    .getString(R.string.ingredient), quantity, measure, ingredientDetail);
+            String ingredientDetail = mIngredient.getIngredient();
+            String trimmedIngredientDetail = TextUtil.capitalizeWords(ingredientDetail);
+
+            Double quantity = mIngredient.getQuantity();
+            String quantityString = Double.toString(quantity);
+            String trimmedQuantityString = TextUtil.removeTrailingZero(quantityString);
+
+            String measure = mIngredient.getMeasure();
+
+            String combinedIngredient = String.format(getResources().getString(R.string.ingredient),
+                    trimmedIngredientDetail,
+                    trimmedQuantityString,
+                    measure
+            );
 
             mIngredientTextView.setText(combinedIngredient);
         }

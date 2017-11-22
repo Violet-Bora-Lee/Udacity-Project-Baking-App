@@ -25,18 +25,20 @@ import java.util.List;
 public class SelectARecipeStepFragment extends Fragment implements
         LoaderManager.LoaderCallbacks {
 
-    private static final String ARG_RECIPE_ID = "recipe_id";
+    private static final String ARG_RECIPE = "recipe";
+
     private static final int RECIPE_FETCH_LOADER_ID = 20;
 
     private RecyclerView mStepsRecyclerView;
     private ShortDescriptionAdapter mAdapter;
 
+    private Recipe mRecipe;
     private List<Step> mSteps;
 //    private Step mStep;
 
-    public static SelectARecipeStepFragment newInstance(int recipeId) {
+    public static SelectARecipeStepFragment newInstance(Recipe recipe) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_RECIPE_ID, recipeId);
+        args.putSerializable(ARG_RECIPE, recipe);
 
         SelectARecipeStepFragment fragment = new SelectARecipeStepFragment();
         fragment.setArguments(args);
@@ -47,8 +49,7 @@ public class SelectARecipeStepFragment extends Fragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int recipeId = getArguments().getInt(ARG_RECIPE_ID);
-
+        mRecipe = (Recipe) getArguments().getSerializable(ARG_RECIPE);
     }
 
     @Nullable
@@ -60,20 +61,13 @@ public class SelectARecipeStepFragment extends Fragment implements
         mStepsRecyclerView = (RecyclerView) view.findViewById(R.id.steps_recycler_view);
         mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        int recipeId = getActivity().getIntent().
-                getIntExtra(SelectARecipeStepActivity.EXTRA_RECIPE_ID, 1);
-
-        mSteps = RecipeLab.get(getActivity()).getSteps(recipeId);
-
-        updateUI(recipeId);
+        updateUI(mRecipe);
 
         return view;
     }
 
-    private void updateUI(int recipeId) {
-        RecipeLab recipeLab = RecipeLab.get(getActivity());
-        mSteps = recipeLab.getSteps(recipeId);
-
+    private void updateUI(Recipe recipe) {
+        mSteps = recipe.getSteps();
         mAdapter = new ShortDescriptionAdapter(mSteps);
         mStepsRecyclerView.setAdapter(mAdapter);
     }
@@ -121,7 +115,6 @@ public class SelectARecipeStepFragment extends Fragment implements
 
         @Override
         public void onClick(View v) {
-//            Intent intent = ViewRecipeStepActivity.newIntent(getActivity(), mStep.getId());
             Intent intent = new Intent(getActivity(), ViewRecipeStepActivity.class);
             startActivity(intent);
         }

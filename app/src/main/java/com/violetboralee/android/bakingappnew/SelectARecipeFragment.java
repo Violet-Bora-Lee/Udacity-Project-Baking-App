@@ -38,7 +38,6 @@ public class SelectARecipeFragment extends Fragment implements
     private List<Recipe> mRecipes;
 
     private RecyclerView mRecyclerView;
-    //    private ProgressBar mLoadingIndicator;
     private TextView mErrorMessageDisplay;
     private RecipeAdapter mAdapter;
 
@@ -63,7 +62,6 @@ public class SelectARecipeFragment extends Fragment implements
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_select_a_recipe, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recipes_recycler_view);
-//        mLoadingIndicator = (ProgressBar) view.findViewById(R.id.pb_loading_indicator);
         mErrorMessageDisplay = (TextView) view.findViewById(R.id.tv_error_message_display);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -71,9 +69,6 @@ public class SelectARecipeFragment extends Fragment implements
         if (savedInstanceState != null) {
             mRecipes = savedInstanceState.getParcelableArrayList(FETCHED_RAW_JSON);
         }
-
-//        ((FragmentActivity) getActivity()).getSupportLoaderManager()
-//                .initLoader(RECIPE_FETCH_LOADER_ID, null, this);
 
         fetchJsonData();
 
@@ -94,7 +89,6 @@ public class SelectARecipeFragment extends Fragment implements
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
 
-
     }
 
     @Override
@@ -102,12 +96,8 @@ public class SelectARecipeFragment extends Fragment implements
 
         return new AsyncTaskLoader<List<Recipe>>(getActivity()) {
 
-//                List<Recipe> recipes = null;
-
             @Override
             protected void onStartLoading() {
-
-//                    mLoadingIndicator.setVisibility(View.VISIBLE);
 
                 if (mRecipes != null) {
                     deliverResult(mRecipes);
@@ -152,7 +142,6 @@ public class SelectARecipeFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
-//        mLoadingIndicator.setVisibility(View.INVISIBLE);
         mAdapter.setRecipeData(data);
 
         if (data == null) {
@@ -178,27 +167,22 @@ public class SelectARecipeFragment extends Fragment implements
 
     }
 
-    private class RecipeHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    private class RecipeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mRecipeNameTextView;
         private Recipe mRecipe;
 
-
         public RecipeHolder(View itemView) {
+
             super(itemView);
             itemView.setOnClickListener(this);
 
             mRecipeNameTextView =
                     (TextView) itemView.findViewById(R.id.list_item_recipe_name_text_view);
-
         }
 
         @Override
         public void onClick(View v) {
-//            Intent intent = new Intent(getActivity(), SelectARecipeStepActivity.class);
-            Intent intent = SelectARecipeStepActivity.newIntent(getActivity(), mRecipe.getId());
-//            intent.putExtra("recipe", )
-
+            Intent intent = new Intent(getActivity(), SelectARecipeStepActivity.class);
             startActivity(intent);
         }
 
@@ -209,7 +193,7 @@ public class SelectARecipeFragment extends Fragment implements
     }
 
     private class RecipeAdapter extends RecyclerView.Adapter<RecipeHolder> {
-        
+
         public RecipeAdapter(List<Recipe> recipes) {
             mRecipes = recipes;
         }

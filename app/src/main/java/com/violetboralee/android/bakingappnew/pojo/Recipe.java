@@ -1,8 +1,5 @@
 package com.violetboralee.android.bakingappnew.pojo;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -14,18 +11,9 @@ import java.util.List;
 /**
  * Java Object representing a single recipe.
  */
-public class Recipe implements Parcelable {
-    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
-        @Override
-        public Recipe createFromParcel(Parcel in) {
-            return new Recipe(in);
-        }
-
-        @Override
-        public Recipe[] newArray(int size) {
-            return new Recipe[size];
-        }
-    };
+public class Recipe
+//        implements Parcelable, Serializable
+{
     @SerializedName("id")
     private int id;
     @SerializedName("name")
@@ -50,14 +38,14 @@ public class Recipe implements Parcelable {
         this.image = image;
     }
 
-    protected Recipe(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        ingredients = in.createTypedArrayList(Ingredient.CREATOR);
-        steps = in.createTypedArrayList(Step.CREATOR);
-        serving = in.readInt();
-        image = in.readString();
-    }
+//    protected Recipe(Parcel in) {
+//        id = in.readInt();
+//        name = in.readString();
+//        ingredients = in.createTypedArrayList(Ingredient.CREATOR);
+//        steps = in.createTypedArrayList(Step.CREATOR);
+//        serving = in.readInt();
+//        image = in.readString();
+//    }
 
     public int getId() {
         return id;
@@ -75,19 +63,32 @@ public class Recipe implements Parcelable {
         return steps;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(name);
-        dest.writeList(ingredients);
-        dest.writeList(steps);
-        dest.writeInt(serving);
-        dest.writeString(image);
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeInt(id);
+//        dest.writeString(name);
+//        dest.writeList(ingredients);
+//        dest.writeList(steps);
+//        dest.writeInt(serving);
+//        dest.writeString(image);
+//
+//    }
 
-    }
+//    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+//        @Override
+//        public Recipe createFromParcel(Parcel in) {
+//            return new Recipe(in);
+//        }
+//
+//        @Override
+//        public Recipe[] newArray(int size) {
+//            return new Recipe[size];
+//        }
+//    };
+
 }

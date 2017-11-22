@@ -1,12 +1,9 @@
-package com.violetboralee.android.bakingappnew;
+package com.violetboralee.android.bakingappnew.model;
 
 import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.violetboralee.android.bakingappnew.pojo.Ingredient;
-import com.violetboralee.android.bakingappnew.pojo.Recipe;
-import com.violetboralee.android.bakingappnew.pojo.Step;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -87,12 +84,8 @@ public class RecipeLab {
     }
 
     // getter of a ingredient
-    public Ingredient getIngredient(int id) {
-        List<Ingredient> ingredients = getIngredients(id);
-        for (Ingredient ingredient : ingredients) {
-            return ingredients.get(id);
-        }
-        return null;
+    public Ingredient getIngredient(int recipeId, int stepId) {
+        return sRecipeLab.getIngredients(recipeId).get(stepId);
     }
 
     // getter of step list
@@ -106,11 +99,11 @@ public class RecipeLab {
     }
 
     // getter of a step
-    public Step getStep(int stepId) {
-        List<Step> steps = getSteps(stepId);
+    public Step getStep(int recipeId, int stepId) {
+        List<Step> steps = sRecipeLab.getSteps(recipeId);
         for (Step step : steps) {
-            if (step.getId() == stepId) {
-                return step;
+            if (step.getId() == stepId) {   // 13 ==
+                return steps.get(stepId);
             }
         }
         return null;

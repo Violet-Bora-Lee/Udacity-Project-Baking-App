@@ -21,9 +21,8 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.violetboralee.android.bakingappnew.pojo.Step;
-
-import java.util.List;
+import com.violetboralee.android.bakingappnew.model.RecipeLab;
+import com.violetboralee.android.bakingappnew.model.Step;
 
 /**
  * Created by bora on 13/11/2017.
@@ -31,7 +30,8 @@ import java.util.List;
 
 public class ViewRecipeStepFragment extends Fragment {
 
-    private static final String ARG_STEP = "step";
+    private static final String ARG_RECIPE_ID = "recipe_id";
+    private static final String ARG_STEP_ID = "step_id";
 
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
@@ -40,25 +40,20 @@ public class ViewRecipeStepFragment extends Fragment {
 
     private TextView mDescription;
 
-    private List<Step> mSteps;
-    private Step mStep;
+    private int recipeId;
+    private int stepId;
 
-    public static ViewRecipeStepFragment newInstance(Step step) {
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_STEP, step);
+
+    public static ViewRecipeStepFragment newInstance(int recipeId, int stepId) {
+        Bundle bundle = new Bundle();
+
+        bundle.putInt(ARG_RECIPE_ID, recipeId);
+        bundle.putInt(ARG_STEP_ID, stepId);
 
         ViewRecipeStepFragment fragment = new ViewRecipeStepFragment();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mStep = (Step) getArguments().getSerializable(ARG_STEP);
-
-    }
-
 
     @Nullable
     @Override
@@ -66,15 +61,27 @@ public class ViewRecipeStepFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_view_recipe_step, container, false);
 
-//        mPlayerView = (SimpleExoPlayerView) v.findViewById(R.id.exo_player_view);
+        recipeId = getArguments().getInt(ARG_RECIPE_ID);
+        stepId = getArguments().getInt(ARG_STEP_ID);
+
+        //        mPlayerView = (SimpleExoPlayerView) v.findViewById(R.id.exo_player_view);
         mShortDescription = (TextView) v.findViewById(R.id.tv_short_description);
-        mShortDescription.setText(mStep.getShortDescription());
 
         mDescription = (TextView) v.findViewById(R.id.tv_description);
-        mDescription.setText(mStep.getDescription());
 
+        updateUI(recipeId, stepId);
 
         return v;
+    }
+
+    private void updateUI(int recipeId, int stepId) {
+        RecipeLab recipeLab = RecipeLab.get(getContext());
+//        List<Step> steps = recipeLab.getSteps(recipeId);
+        Step step = recipeLab.getStep(recipeId, stepId);
+
+        mShortDescription.setText(step.getShortDescription());
+        mDescription.setText(step.getDescription());
+
     }
 
     /**
@@ -110,6 +117,6 @@ public class ViewRecipeStepFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        releasePlayer();
+//        releasePlayer();
     }
 }

@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,8 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.violetboralee.android.bakingappnew.pojo.Recipe;
-import com.violetboralee.android.bakingappnew.pojo.Step;
+import com.violetboralee.android.bakingappnew.model.Ingredient;
+import com.violetboralee.android.bakingappnew.model.RecipeLab;
+import com.violetboralee.android.bakingappnew.model.Step;
 
 import java.util.List;
 
@@ -22,35 +21,27 @@ import java.util.List;
  * Created by bora on 17/11/2017.
  */
 
-public class SelectARecipeStepFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks {
+public class SelectARecipeStepFragment extends Fragment {
 
-    private static final String ARG_RECIPE = "recipe";
-
-    private static final int RECIPE_FETCH_LOADER_ID = 20;
+    private static final String ARG_RECIPE_ID = "recipe";
 
     private RecyclerView mStepsRecyclerView;
-    private ShortDescriptionAdapter mAdapter;
+    private StepShortDescriptionAdapter mAdapter;
 
-    private Recipe mRecipe;
-    private List<Step> mSteps;
-//    private Step mStep;
+    private int stepId;
 
-    public static SelectARecipeStepFragment newInstance(Recipe recipe) {
+    private int mRecipeId;
+
+
+    public static SelectARecipeStepFragment newInstance(int recipeId) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_RECIPE, recipe);
+        args.putInt(ARG_RECIPE_ID, recipeId);
 
         SelectARecipeStepFragment fragment = new SelectARecipeStepFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mRecipe = (Recipe) getArguments().getSerializable(ARG_RECIPE);
-    }
 
     @Nullable
     @Override
@@ -58,46 +49,46 @@ public class SelectARecipeStepFragment extends Fragment implements
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_select_a_recipe_step, container, false);
 
+        mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
+
         mStepsRecyclerView = (RecyclerView) view.findViewById(R.id.steps_recycler_view);
         mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        updateUI(mRecipe);
+        updateUI(mRecipeId);
 
         return view;
     }
 
-    private void updateUI(Recipe recipe) {
-        mSteps = recipe.getSteps();
-        mAdapter = new ShortDescriptionAdapter(mSteps);
-        mStepsRecyclerView.setAdapter(mAdapter);
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI(mRecipeId);
     }
 
-    @Override
-    public Loader onCreateLoader(int id, Bundle args) {
-        if (id == RECIPE_FETCH_LOADER_ID) {
+    private void updateUI(int recipeId) {
+        RecipeLab recipeLab = RecipeLab.get(getActivity());
+        List<Step> steps = recipeLab.getSteps(recipeId);
+        List<Ingredient> ingredients = recipeLab.getIngredients(recipeId);
 
-
+        if (mAdapter == null) {
+            mAdapter = new StepShortDescriptionAdapter(steps);
+            mStepsRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.notifyDataSetChanged();
         }
-        return null;
     }
 
-    @Override
-    public void onLoadFinished(Loader loader, Object data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader loader) {
-
-    }
 
     private class ShortDescriptionHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
+
         public TextView mShortDescriptionTextView;
         private Step mStep;
+        private int stepId;
 
         public ShortDescriptionHolder(View itemView) {
             super(itemView);
+
             itemView.setOnClickListener(this);
 
             mShortDescriptionTextView =
@@ -106,23 +97,22 @@ public class SelectARecipeStepFragment extends Fragment implements
 
         public void bindStep(Step step) {
             mStep = step;
+            stepId = step.getId();
             mShortDescriptionTextView.setText(step.getId() + ". " + step.getShortDescription());
         }
 
-        public void setRecipeData(List<Recipe> recipeData) {
-
-        }
 
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), ViewRecipeStepActivity.class);
+            Intent intent = ViewRecipeStepActivity.newIntent(getActivity(), mRecipeId, stepId);
             startActivity(intent);
         }
     }
 
-    private class ShortDescriptionAdapter extends RecyclerView.Adapter<ShortDescriptionHolder> {
+    private class StepShortDescriptionAdapter extends RecyclerView.Adapter<ShortDescriptionHolder> {
+        final private List<Step> mSteps;
 
-        public ShortDescriptionAdapter(List<Step> steps) {
+        public StepShortDescriptionAdapter(List<Step> steps) {
             mSteps = steps;
         }
 
@@ -145,6 +135,4 @@ public class SelectARecipeStepFragment extends Fragment implements
             return mSteps.size();
         }
     }
-
-
 }

@@ -1,8 +1,8 @@
 package com.violetboralee.android.bakingappnew;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
-
-import com.violetboralee.android.bakingappnew.pojo.Recipe;
 
 /**
  * Created by bora on 17/11/2017.
@@ -10,17 +10,17 @@ import com.violetboralee.android.bakingappnew.pojo.Recipe;
 
 public class SelectARecipeStepActivity extends SingleFragmentActivity {
 
-    public static final String EXTRA_RECIPE = "com.violetboralee.android.bakingappnew.recipe";
+    public static final String EXTRA_RECIPE_ID = "recipe_id";
 
-//    public static Intent newIntent(Context packageContext, Recipe recipe) {
-//        Intent intent = new Intent(packageContext, SelectARecipeStepActivity.class);
-//        intent.putExtra(EXTRA_RECIPE, recipe);
-//        return intent;
-//    }
+    public static Intent newIntent(Context packageContext, int recipeId) {
+        Intent intent = new Intent(packageContext, SelectARecipeStepActivity.class);
+        intent.putExtra(EXTRA_RECIPE_ID, recipeId);
+        return intent;
+    }
 
     @Override
     protected Fragment createFragment() {
-        Recipe recipe = getIntent().getParcelableExtra(EXTRA_RECIPE);
-        return SelectARecipeStepFragment.newInstance(recipe);
+        int RecipeId = getIntent().getIntExtra(EXTRA_RECIPE_ID, 1);
+        return SelectARecipeStepFragment.newInstance(RecipeId);
     }
 }

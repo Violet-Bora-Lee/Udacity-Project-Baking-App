@@ -25,8 +25,11 @@ public class SelectARecipeStepFragment extends Fragment {
 
     private static final String ARG_RECIPE_ID = "recipe";
 
+    private RecyclerView mIngredientsRecyclerView;
+    private IngredientAdapter mIngredientAdapter;
+
     private RecyclerView mStepsRecyclerView;
-    private StepShortDescriptionAdapter mAdapter;
+    private StepShortDescriptionAdapter mShortDescriptionAdapter;
 
     private int stepId;
 
@@ -51,7 +54,10 @@ public class SelectARecipeStepFragment extends Fragment {
 
         mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
 
-        mStepsRecyclerView = (RecyclerView) view.findViewById(R.id.steps_recycler_view);
+        mIngredientsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_ingredients);
+        mIngredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mStepsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_steps);
         mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         updateUI(mRecipeId);
@@ -70,19 +76,83 @@ public class SelectARecipeStepFragment extends Fragment {
         List<Step> steps = recipeLab.getSteps(recipeId);
         List<Ingredient> ingredients = recipeLab.getIngredients(recipeId);
 
-        if (mAdapter == null) {
-            mAdapter = new StepShortDescriptionAdapter(steps);
-            mStepsRecyclerView.setAdapter(mAdapter);
+        if (mShortDescriptionAdapter == null) {
+            mShortDescriptionAdapter = new StepShortDescriptionAdapter(steps);
+            mStepsRecyclerView.setAdapter(mShortDescriptionAdapter);
         } else {
-            mAdapter.notifyDataSetChanged();
+            mShortDescriptionAdapter.notifyDataSetChanged();
+        }
+
+        if (mIngredientAdapter == null) {
+            mIngredientAdapter = new IngredientAdapter(ingredients);
+            mIngredientsRecyclerView.setAdapter(mIngredientAdapter);
+        } else {
+            mIngredientAdapter.notifyDataSetChanged();
         }
     }
+
+
+    private class IngredientHolder extends RecyclerView.ViewHolder {
+        private Ingredient mIngredient;
+        private TextView mIngredientTextView;
+
+        public IngredientHolder(View itemView) {
+            super(itemView);
+            mIngredientTextView = (TextView) itemView.findViewById(R.id.tv_list_item_ingredient);
+        }
+
+        public void bindIngredient(Ingredient ingredient) {
+            mIngredient = ingredient;
+            Double quantity = mIngredient.getQuantity();
+            String measure = mIngredient.getMeasure();
+            String ingredientDetail = mIngredient.getIngredient();
+
+            String combinedIngredient = String.format(getResources()
+                    .getString(R.string.ingredient), quantity, measure, ingredientDetail);
+
+            mIngredientTextView.setText(combinedIngredient);
+        }
+    }
+
+    private class IngredientAdapter extends RecyclerView.Adapter<IngredientHolder> {
+        final private List<Ingredient> mIngredients;
+
+        public IngredientAdapter(List<Ingredient> ingredients) {
+            mIngredients = ingredients;
+        }
+
+        @Override
+        public IngredientHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(getActivity())
+                    .inflate(R.layout.list_item_ingredients, parent, false);
+
+            return new IngredientHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(IngredientHolder holder, int position) {
+            Ingredient ingredient = mIngredients.get(position);
+            holder.bindIngredient(ingredient);
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return mIngredients.size();
+        }
+    }
+
+
+
+
+
+
 
 
     private class ShortDescriptionHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        public TextView mShortDescriptionTextView;
+        private TextView mShortDescriptionTextView;
         private Step mStep;
         private int stepId;
 

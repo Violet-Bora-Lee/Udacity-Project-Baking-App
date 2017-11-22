@@ -3,4 +3,5 @@
     <string name="short_description_label">Short Description</string>
     <string name="description_label">Description</string>
     <string name="error_message">Failed to get data. Please try again.</string>
+    <string name="ingredient">%1$f%2$s %3$s</string>
 </resources>

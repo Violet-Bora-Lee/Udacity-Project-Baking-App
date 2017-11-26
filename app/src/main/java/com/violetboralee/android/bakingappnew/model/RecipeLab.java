@@ -4,12 +4,16 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.violetboralee.android.bakingappnew.retrofit.BakingAppClient;
+import com.violetboralee.android.bakingappnew.retrofit.ServiceGenerator;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
 
 /**
  * Created by bora on 15/11/2017.
@@ -22,8 +26,8 @@ public class RecipeLab {
 
     // Constructor
     private RecipeLab(Context context) {
-
-        mRecipes = fetchRecipeFromJson(context);
+//        mRecipes = fetchRecipeFromJson(context);
+        mRecipes = fetchRecipeFromInternet();
     }
 
     public static RecipeLab get(Context context) {
@@ -56,6 +60,20 @@ public class RecipeLab {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private List<Recipe> fetchRecipeFromInternet() {
+        BakingAppClient service = ServiceGenerator.createService(BakingAppClient.class);
+
+        Call<List<Recipe>> call = service.getRecipes();
+
+        try {
+            List<Recipe> recipes = call.execute().body();
+            return recipes;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // getter of recipe list

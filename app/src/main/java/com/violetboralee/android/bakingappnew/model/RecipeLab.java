@@ -21,13 +21,34 @@ import retrofit2.Call;
 
 public class RecipeLab {
     private static RecipeLab sRecipeLab;
-
     private static List<Recipe> mRecipes;
 
     // Constructor
     private RecipeLab(Context context) {
 //        mRecipes = fetchRecipeFromJson(context);
-        mRecipes = fetchRecipeFromInternet();
+//        mRecipes = fetchRecipeFromTheInternet();
+
+//        BakingAppClient service = ServiceGenerator.createService(BakingAppClient.class);
+//
+//        Call<List<Recipe>> call = service.getRecipes();
+//
+//        call.enqueue(new Callback<List<Recipe>>() {
+//            @Override
+//            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+//                if (response.isSuccessful()) {
+//                    mRecipes = response.body();
+//                } else {
+//                    Log.e("Request failed: ", "Cannot request recipe json");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+//                Log.e("Error fetching recipes", t.getMessage());
+//
+//            }
+//        });
+
     }
 
     public static RecipeLab get(Context context) {
@@ -62,7 +83,7 @@ public class RecipeLab {
         }
     }
 
-    private List<Recipe> fetchRecipeFromInternet() {
+    private List<Recipe> fetchRecipeFromTheInternet() {
         BakingAppClient service = ServiceGenerator.createService(BakingAppClient.class);
 
         Call<List<Recipe>> call = service.getRecipes();
@@ -79,6 +100,10 @@ public class RecipeLab {
     // getter of recipe list
     public List<Recipe> getRecipes() {
         return mRecipes;
+    }
+
+    public static void setRecipes(List<Recipe> recipes) {
+        RecipeLab.mRecipes = recipes;
     }
 
     // getter of a recipe

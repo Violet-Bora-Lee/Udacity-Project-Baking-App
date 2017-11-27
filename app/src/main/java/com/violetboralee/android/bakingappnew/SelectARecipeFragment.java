@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,14 @@ import android.widget.TextView;
 
 import com.violetboralee.android.bakingappnew.model.Recipe;
 import com.violetboralee.android.bakingappnew.model.RecipeLab;
+import com.violetboralee.android.bakingappnew.retrofit.BakingAppClient;
+import com.violetboralee.android.bakingappnew.retrofit.ServiceGenerator;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by bora on 19/11/2017.
@@ -51,18 +58,38 @@ public class SelectARecipeFragment extends Fragment {
     }
 
     private void updateUI() {
-        RecipeLab recipeLab = RecipeLab.get(getActivity());
-        List<Recipe> recipes = recipeLab.getRecipes();
+        final RecipeLab recipeLab = RecipeLab.get(getActivity());
 
-        if (mAdapter == null) {
-            mAdapter = new RecipeAdapter(recipes);
-            mRecipeRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.notifyDataSetChanged();
-        }
+        BakingAppClient service = ServiceGenerator.createService(BakingAppClient.class);
+
+        Call<List<Recipe>> call = service.getRecipes();
+
+        call.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                if (response.isSuccessful()) {
+
+                    RecipeLab.setRecipes(response.body());
+                    List<Recipe> recipes = recipeLab.getRecipes();
+                    if (mAdapter == null) {
+                        mAdapter = new RecipeAdapter(recipes);
+                        mRecipeRecyclerView.setAdapter(mAdapter);
+                    } else {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    Log.e("Request failed: ", "Cannot request recipe json");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e("Error fetching recipes", t.getMessage());
+
+            }
+        });
+
     }
-
-
 
 
     private class RecipeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

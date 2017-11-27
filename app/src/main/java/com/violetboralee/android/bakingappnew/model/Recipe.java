@@ -11,9 +11,7 @@ import java.util.List;
 /**
  * Java Object representing a single recipe.
  */
-public class Recipe
-//        implements Parcelable, Serializable
-{
+public class Recipe {
     @SerializedName("id")
     private int id;
     @SerializedName("name")

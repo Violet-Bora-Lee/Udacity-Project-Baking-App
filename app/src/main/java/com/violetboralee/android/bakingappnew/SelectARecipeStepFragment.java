@@ -177,7 +177,7 @@ public class SelectARecipeStepFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = ViewRecipeStepPagerActivity.newIntent(getActivity(), mRecipeId, stepId);
+            Intent intent = ViewRecipeStepActivity.newIntent(getActivity(), mRecipeId, stepId);
             startActivity(intent);
         }
     }

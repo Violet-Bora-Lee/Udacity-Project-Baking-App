@@ -24,7 +24,7 @@
 
         </activity>
 
-        <activity android:name=".ViewRecipeStepActivity">
+        <activity android:name=".ViewRecipeStepPagerActivity">
 
         </activity>
     </application>

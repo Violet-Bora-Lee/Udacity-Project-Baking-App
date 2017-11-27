@@ -4,4 +4,6 @@
     <string name="description_label">Description</string>
     <string name="error_message">Failed to get data. Please try again.</string>
     <string name="ingredient">%1$s (%2$s %3$s)</string>
+    <string name="previous_step">Previous</string>
+    <string name="next_step">Next</string>
 </resources>

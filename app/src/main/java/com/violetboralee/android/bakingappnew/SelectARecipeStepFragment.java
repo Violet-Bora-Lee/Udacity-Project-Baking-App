@@ -32,8 +32,6 @@ public class SelectARecipeStepFragment extends Fragment {
     private RecyclerView mStepsRecyclerView;
     private StepShortDescriptionAdapter mShortDescriptionAdapter;
 
-    private int stepId;
-
     private int mRecipeId;
 
 
@@ -151,11 +149,6 @@ public class SelectARecipeStepFragment extends Fragment {
             return mIngredients.size();
         }
     }
-
-
-
-
-
 
 
 

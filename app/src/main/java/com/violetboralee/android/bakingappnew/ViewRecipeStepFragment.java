@@ -74,9 +74,14 @@ public class ViewRecipeStepFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI(recipeId, stepId);
+    }
+
     private void updateUI(int recipeId, int stepId) {
         RecipeLab recipeLab = RecipeLab.get(getContext());
-//        List<Step> steps = recipeLab.getSteps(recipeId);
         Step step = recipeLab.getStep(recipeId, stepId);
 
         mShortDescription.setText(step.getShortDescription());

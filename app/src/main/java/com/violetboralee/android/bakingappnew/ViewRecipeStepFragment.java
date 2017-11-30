@@ -7,9 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,16 +38,18 @@ import com.violetboralee.android.bakingappnew.model.Recipe;
 import com.violetboralee.android.bakingappnew.model.RecipeLab;
 import com.violetboralee.android.bakingappnew.model.Step;
 
+import java.util.List;
+
 /**
  * Created by bora on 13/11/2017.
  */
 
-public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventListener {
+public class ViewRecipeStepFragment extends Fragment
+        implements ExoPlayer.EventListener, View.OnClickListener {
+    public static final String ARG_CURRENT_INDEX = "current_index";
     private static final String LOG_TAG = ViewRecipeStepFragment.class.getSimpleName();
-
     private static final String ARG_RECIPE_ID = "recipe_id";
     private static final String ARG_STEP_ID = "step_id";
-
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private MediaSessionCompat mMediaSession;
@@ -63,17 +62,20 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
     private TextView mShortDescription;
     private TextView mDescription;
 
-    private int recipeId;
-    private int stepId;
+    private List<Step> mSteps;
+    private int mRecipeId;
+    private int mStepId;
+    private int mCurrentIndex;
 
     private Step mStep;
 
 
-    public static ViewRecipeStepFragment newInstance(int recipeId, int stepId) {
+    public static ViewRecipeStepFragment newInstance(int recipeId, int stepId, int currentIndex) {
         Bundle bundle = new Bundle();
 
         bundle.putInt(ARG_RECIPE_ID, recipeId);
         bundle.putInt(ARG_STEP_ID, stepId);
+        bundle.putInt(ARG_CURRENT_INDEX, currentIndex);
 
         ViewRecipeStepFragment fragment = new ViewRecipeStepFragment();
         fragment.setArguments(bundle);
@@ -86,24 +88,22 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_view_recipe_step, container, false);
 
-        setupToolbar();
+        mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
+        mStepId = getArguments().getInt(ARG_STEP_ID);
+        mCurrentIndex = getArguments().getInt(ARG_CURRENT_INDEX);
 
-        recipeId = getArguments().getInt(ARG_RECIPE_ID);
-        stepId = getArguments().getInt(ARG_STEP_ID);
-
-        mStep = RecipeLab.get(getActivity()).getStep(recipeId, stepId);
-
-        String videoURL = getVideoUri(mStep);
+        mSteps = RecipeLab.get(getActivity()).getSteps(mRecipeId);
+        mStep = RecipeLab.get(getActivity()).getStep(mRecipeId, mStepId);
 
         // Initialize the player view.
         mPlayerView = (SimpleExoPlayerView) v.findViewById(R.id.exo_player_view);
         mBufferingProgressBar = (ProgressBar) v.findViewById(R.id.pb_buffering_exo_player);
 
         // Initialize the media session.
-
         initializeMediaSession();
 
         // Initialize the player.
+        String videoURL = getVideoUri(mStep);
         if (videoURL != "") {
             initializePlayer(Uri.parse(videoURL));
         } else if (videoURL == "") {
@@ -117,26 +117,35 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
         mShortDescription = (TextView) v.findViewById(R.id.tv_short_description);
         mDescription = (TextView) v.findViewById(R.id.tv_description);
 
-        updateUI(recipeId, stepId);
+        updateUI(mRecipeId, mStepId);
 
         Button prevStep = (Button) v.findViewById(R.id.btn_previous);
+        prevStep.setOnClickListener(this);
+
         Button nextStep = (Button) v.findViewById(R.id.btn_next);
-
-        // TODO 버튼 리스너 달아주기
-
+        nextStep.setOnClickListener(this);
 
         return v;
     }
 
-    private void setupToolbar() {
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setTitle(Html.fromHtml("<font color=\"white\">" + getString(R.string.app_name) + "</font>"));
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_previous:
+                int sizeOfSteps = mSteps.size();
+                mCurrentIndex = (mCurrentIndex + 1) % sizeOfSteps;  // Increase the value of index
+                if (mStepId > 0) {
+                    if (mExoPlayer != null) {
+                        mExoPlayer.stop();
+                    }
+
+
+                }
         }
+
     }
+
 
     /**
      * Initialize the Media Session to be enabled with media buttons, transport controls, callbacks
@@ -185,7 +194,7 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
     @Override
     public void onResume() {
         super.onResume();
-        updateUI(recipeId, stepId);
+        updateUI(mRecipeId, mStepId);
     }
 
     private void updateUI(int recipeId, int stepId) {

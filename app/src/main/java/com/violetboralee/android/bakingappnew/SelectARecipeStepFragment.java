@@ -169,7 +169,8 @@ public class SelectARecipeStepFragment extends Fragment {
         private TextView mStepNumber;
         private TextView mShortDescriptionTextView;
         private Step mStep;
-        private int stepId;
+        private int mStepId;
+        private int mCurrentIndex;
 
         public ShortDescriptionHolder(View itemView) {
             super(itemView);
@@ -183,17 +184,24 @@ public class SelectARecipeStepFragment extends Fragment {
 
         public void bindStep(Step step) {
             mStep = step;
-            String stepId = String.valueOf(step.getId());
+            mStepId = step.getId();
+            String stepIdString = String.valueOf(mStepId);
             String shortDescription = step.getShortDescription();
 
-            mStepNumber.setText(stepId);
+            RecipeLab recipeLab = RecipeLab.get(getActivity());
+            mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
+            List<Step> steps = recipeLab.getSteps(mRecipeId);
+            mCurrentIndex = steps.indexOf(mStep);
+
+            mStepNumber.setText(stepIdString);
             mShortDescriptionTextView.setText(shortDescription);
         }
 
 
         @Override
         public void onClick(View v) {
-            Intent intent = ViewRecipeStepActivity.newIntent(getActivity(), mRecipeId, mStep.getId());
+            Intent intent = ViewRecipeStepActivity
+                    .newIntent(getActivity(), mRecipeId, mStepId, mCurrentIndex);
             startActivity(intent);
         }
     }

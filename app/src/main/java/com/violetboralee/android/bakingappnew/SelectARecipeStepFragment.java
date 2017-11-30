@@ -1,6 +1,7 @@
 package com.violetboralee.android.bakingappnew;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ public class SelectARecipeStepFragment extends Fragment {
 
     private RecyclerView mIngredientsRecyclerView;
     private IngredientAdapter mIngredientAdapter;
+    private TextView mIngredientIntroduction;
 
     private RecyclerView mStepsRecyclerView;
     private StepShortDescriptionAdapter mShortDescriptionAdapter;
@@ -55,6 +57,7 @@ public class SelectARecipeStepFragment extends Fragment {
 
         mIngredientsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_ingredients);
         mIngredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mIngredientIntroduction = (TextView) view.findViewById(R.id.ingredient_introdiction);
 
         mStepsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_steps);
         mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -72,8 +75,13 @@ public class SelectARecipeStepFragment extends Fragment {
 
     private void updateUI(int recipeId) {
         RecipeLab recipeLab = RecipeLab.get(getActivity());
-        List<Step> steps = recipeLab.getSteps(recipeId);
+        String foodName = recipeLab.getRecipe(recipeId).getName();
+
+        Resources res = getResources();
+        String ingredientIntroduction = String.format(res.getString(R.string.ingredient_introduction), foodName);
+
         List<Ingredient> ingredients = recipeLab.getIngredients(recipeId);
+        List<Step> steps = recipeLab.getSteps(recipeId);
 
         if (mShortDescriptionAdapter == null) {
             mShortDescriptionAdapter = new StepShortDescriptionAdapter(steps);
@@ -83,10 +91,13 @@ public class SelectARecipeStepFragment extends Fragment {
         }
 
         if (mIngredientAdapter == null) {
+            mIngredientIntroduction.setText(ingredientIntroduction);
             mIngredientAdapter = new IngredientAdapter(ingredients);
             mIngredientsRecyclerView.setAdapter(mIngredientAdapter);
         } else {
             mIngredientAdapter.notifyDataSetChanged();
+            mIngredientIntroduction.setText(foodName);
+
         }
     }
 
@@ -155,6 +166,7 @@ public class SelectARecipeStepFragment extends Fragment {
     private class ShortDescriptionHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
+        private TextView mStepNumber;
         private TextView mShortDescriptionTextView;
         private Step mStep;
         private int stepId;
@@ -164,20 +176,24 @@ public class SelectARecipeStepFragment extends Fragment {
 
             itemView.setOnClickListener(this);
 
+            mStepNumber = (TextView) itemView.findViewById(R.id.step_number);
             mShortDescriptionTextView =
                     (TextView) itemView.findViewById(R.id.list_item_short_description_text_view);
         }
 
         public void bindStep(Step step) {
             mStep = step;
-            stepId = step.getId();
-            mShortDescriptionTextView.setText(step.getId() + ". " + step.getShortDescription());
+            String stepId = String.valueOf(step.getId());
+            String shortDescription = step.getShortDescription();
+
+            mStepNumber.setText(stepId);
+            mShortDescriptionTextView.setText(shortDescription);
         }
 
 
         @Override
         public void onClick(View v) {
-            Intent intent = ViewRecipeStepActivity.newIntent(getActivity(), mRecipeId, stepId);
+            Intent intent = ViewRecipeStepActivity.newIntent(getActivity(), mRecipeId, mStep.getId());
             startActivity(intent);
         }
     }

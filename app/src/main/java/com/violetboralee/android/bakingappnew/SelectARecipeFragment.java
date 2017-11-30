@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.violetboralee.android.bakingappnew.model.Recipe;
@@ -93,21 +94,28 @@ public class SelectARecipeFragment extends Fragment {
 
 
     private class RecipeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mRecipeNameTextView;
+        private ImageView mImageView;
+        private TextView mRecipeNameTextView, mRecipeStepTextView;
         private Recipe mRecipe;
 
         public RecipeHolder(View itemView) {
-
             super(itemView);
+
             itemView.setOnClickListener(this);
 
-            mRecipeNameTextView =
-                    (TextView) itemView.findViewById(R.id.list_item_recipe_name_text_view);
+            mImageView = (ImageView) itemView.findViewById(R.id.list_item_recipe_image);
+            mRecipeNameTextView = (TextView) itemView.findViewById(R.id.list_item_recipe_name_text_view);
+            mRecipeStepTextView = (TextView) itemView.findViewById(R.id.list_item_recipe_step_number_text_view);
+
         }
 
         public void bindRecipe(Recipe recipe) {
             mRecipe = recipe;
+            int stepNumber = recipe.getSteps().size();
+            String stepNumberString = String.valueOf(stepNumber) + " steps";
+
             mRecipeNameTextView.setText(recipe.getName());
+            mRecipeStepTextView.setText(stepNumberString);
         }
 
         @Override

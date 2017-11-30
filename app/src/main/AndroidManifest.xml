@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".SelectARecipeActivity">
+        <activity
+            android:name=".SelectARecipeActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -20,11 +22,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SelectARecipeStepActivity">
+        <activity
+            android:name=".SelectARecipeStepActivity"
+            android:parentActivityName=".SelectARecipeActivity"
+            android:screenOrientation="portrait"
+            >
 
         </activity>
 
-        <activity android:name=".ViewRecipeStepActivity">
+        <activity
+            android:name=".ViewRecipeStepActivity"
+            android:parentActivityName=".SelectARecipeStepActivity"
+            android:screenOrientation="portrait"
+            >
 
         </activity>
     </application>

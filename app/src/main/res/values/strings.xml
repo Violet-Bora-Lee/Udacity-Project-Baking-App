@@ -1,9 +1,14 @@
 <resources>
-    <string name="app_name">BakingAppNew</string>
+    <string name="app_name">Delicious Baking</string>
+
     <string name="short_description_label">Short Description</string>
     <string name="description_label">Description</string>
     <string name="error_message">Failed to get data. Please try again.</string>
+    <string name="ingredient_label">Ingredient</string>
     <string name="ingredient">%1$s (%2$s %3$s)</string>
+
     <string name="previous_step">Previous</string>
     <string name="next_step">Next</string>
+
+    <string name="ingredient_introduction">What you need to make %1$s!</string>
 </resources>

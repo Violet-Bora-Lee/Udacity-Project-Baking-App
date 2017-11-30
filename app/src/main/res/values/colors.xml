@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#f44337</color>
+    <color name="colorPrimaryDark">#d72d33</color>
+    <color name="colorAccent">#f44337</color>
+    <color name="fontGray">#999696</color>
+    <color name="whiteBackGround">#f1f5f8</color>
+
+
+    <!--custom style-->
+    <color name="descriptionBackGround">#e6ffffff</color>
+    <color name="splitterGray">#70dfdfdf</color>
+
+    <color name="button_white">@android:color/white</color>
+
 </resources>

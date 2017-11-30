@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +37,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
+import com.violetboralee.android.bakingappnew.model.Recipe;
 import com.violetboralee.android.bakingappnew.model.RecipeLab;
 import com.violetboralee.android.bakingappnew.model.Step;
 
@@ -55,6 +59,7 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
 
     private ImageView mThumbnailImg;
 
+    private TextView mFoodName;
     private TextView mShortDescription;
     private TextView mDescription;
 
@@ -81,6 +86,8 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_view_recipe_step, container, false);
 
+        setupToolbar();
+
         recipeId = getArguments().getInt(ARG_RECIPE_ID);
         stepId = getArguments().getInt(ARG_STEP_ID);
 
@@ -105,6 +112,7 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
 
 
         // Initialize the views.
+        mFoodName = (TextView) v.findViewById(R.id.tv_food_name);
         mThumbnailImg = (ImageView) v.findViewById(R.id.iv_thumbnail_image);
         mShortDescription = (TextView) v.findViewById(R.id.tv_short_description);
         mDescription = (TextView) v.findViewById(R.id.tv_description);
@@ -118,6 +126,16 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
 
 
         return v;
+    }
+
+    private void setupToolbar() {
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle(Html.fromHtml("<font color=\"white\">" + getString(R.string.app_name) + "</font>"));
+
+        }
     }
 
     /**
@@ -172,10 +190,11 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
 
     private void updateUI(int recipeId, int stepId) {
         RecipeLab recipeLab = RecipeLab.get(getContext());
+        Recipe recipe = recipeLab.getRecipe(recipeId);
         Step step = recipeLab.getStep(recipeId, stepId);
 
         String imgUrl = step.getThumbnailURL();
-        String shorDescription = step.getShortDescription();
+        String shortDescription = step.getShortDescription();
         String description = step.getDescription();
 
         if (imgUrl != "") {
@@ -183,7 +202,8 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
             Picasso.with(getContext()).load(imgUri).into(mThumbnailImg);
         }
 
-        mShortDescription.setText(shorDescription);
+        mFoodName.setText(recipe.getName());
+        mShortDescription.setText(shortDescription);
         mDescription.setText(description);
 
     }

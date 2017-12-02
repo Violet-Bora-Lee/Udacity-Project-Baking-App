@@ -14,7 +14,7 @@
 
         <activity
             android:name=".SelectARecipeActivity"
-            android:screenOrientation="portrait">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -25,7 +25,6 @@
         <activity
             android:name=".SelectARecipeStepActivity"
             android:parentActivityName=".SelectARecipeActivity"
-            android:screenOrientation="portrait"
             >
 
         </activity>
@@ -33,10 +32,18 @@
         <activity
             android:name=".ViewRecipeStepActivity"
             android:parentActivityName=".SelectARecipeStepActivity"
-            android:screenOrientation="portrait"
             >
 
         </activity>
+
+        <!--<activity-->
+        <!--android:name=".ViewRecipeStepPagerActivity"-->
+        <!--android:parentActivityName=".SelectARecipeStepActivity"-->
+        <!--&gt;-->
+
+        <!--</activity>-->
+
+
     </application>
 
 </manifest>

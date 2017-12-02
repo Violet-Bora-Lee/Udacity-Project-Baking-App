@@ -39,6 +39,7 @@ public class SelectARecipeFragment extends Fragment {
 
     }
 
+    // TODO: 랜드스케이프모드시 그리드레이아웃으로 바뀌게 레이아웃파일 수정 및 코드 연동
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -95,7 +96,7 @@ public class SelectARecipeFragment extends Fragment {
 
     private class RecipeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mImageView;
-        private TextView mRecipeNameTextView, mRecipeStepTextView;
+        private TextView mRecipeNameTextView, mRecipeServingTextView, mRecipeStepTextView;
         private Recipe mRecipe;
 
         public RecipeHolder(View itemView) {
@@ -105,16 +106,22 @@ public class SelectARecipeFragment extends Fragment {
 
             mImageView = (ImageView) itemView.findViewById(R.id.list_item_recipe_image);
             mRecipeNameTextView = (TextView) itemView.findViewById(R.id.list_item_recipe_name_text_view);
+            mRecipeServingTextView = (TextView) itemView.findViewById(R.id.list_item_recipe_serving_text_view);
             mRecipeStepTextView = (TextView) itemView.findViewById(R.id.list_item_recipe_step_number_text_view);
 
         }
 
         public void bindRecipe(Recipe recipe) {
             mRecipe = recipe;
+
+            int serving = recipe.getServing();
+            String servingString = String.valueOf(serving) + " servings";
+
             int stepNumber = recipe.getSteps().size();
             String stepNumberString = String.valueOf(stepNumber) + " steps";
 
             mRecipeNameTextView.setText(recipe.getName());
+            mRecipeServingTextView.setText(servingString);
             mRecipeStepTextView.setText(stepNumberString);
         }
 

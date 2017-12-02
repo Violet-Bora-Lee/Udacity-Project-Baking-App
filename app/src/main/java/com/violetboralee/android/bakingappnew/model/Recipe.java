@@ -52,4 +52,7 @@ public class Recipe {
         return steps;
     }
 
+    public int getServing() {
+        return serving;
+    }
 }

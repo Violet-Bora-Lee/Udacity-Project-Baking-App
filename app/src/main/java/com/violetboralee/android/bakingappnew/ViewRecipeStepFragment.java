@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -65,6 +66,7 @@ public class ViewRecipeStepFragment extends Fragment
     private List<Step> mSteps;
     private int mRecipeId;
     private int mStepId;
+    private int mSizeOfSteps;
     private int mCurrentIndex;
 
     private Step mStep;
@@ -90,10 +92,11 @@ public class ViewRecipeStepFragment extends Fragment
 
         mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
         mStepId = getArguments().getInt(ARG_STEP_ID);
-        mCurrentIndex = getArguments().getInt(ARG_CURRENT_INDEX);
 
         mSteps = RecipeLab.get(getActivity()).getSteps(mRecipeId);
+        mSizeOfSteps = mSteps.size();
         mStep = RecipeLab.get(getActivity()).getStep(mRecipeId, mStepId);
+        mCurrentIndex = getArguments().getInt(ARG_CURRENT_INDEX);
 
         // Initialize the player view.
         mPlayerView = (SimpleExoPlayerView) v.findViewById(R.id.exo_player_view);
@@ -128,23 +131,63 @@ public class ViewRecipeStepFragment extends Fragment
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI(mRecipeId, mStepId);
+    }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_previous:
-                int sizeOfSteps = mSteps.size();
-                mCurrentIndex = (mCurrentIndex + 1) % sizeOfSteps;  // Increase the value of index
+//                Toast.makeText(getContext(), "Prev Button", Toast.LENGTH_LONG).show();
                 if (mStepId > 0) {
                     if (mExoPlayer != null) {
                         mExoPlayer.stop();
                     }
-
-
+                    mCurrentIndex--; // Decrease the index as long as the index is greater than 0
+                    mStepId--;
+                } else {
+                    Toast.makeText(getContext(), "You are in a first step!", Toast.LENGTH_LONG).show();
                 }
+                // TODO: Change the fragment
+                return;
+
+            case R.id.btn_next:
+//                Toast.makeText(getContext(), "Next Button", Toast.LENGTH_LONG).show();
+                if (mCurrentIndex < mSizeOfSteps - 1) {
+                    mCurrentIndex++; // Increase the index as long as the index remains <= the size of the List of Steps
+                } else {
+                    Toast.makeText(getContext(), "Your are in the last step!", Toast.LENGTH_LONG).show();
+                }
+                // TODO: Change the fragment
+                return;
         }
 
     }
+
+    private void updateUI(int recipeId, int stepId) {
+        RecipeLab recipeLab = RecipeLab.get(getContext());
+        Recipe recipe = recipeLab.getRecipe(recipeId);
+        Step step = recipeLab.getStep(recipeId, stepId);
+
+        String imgUrl = step.getThumbnailURL();
+        String shortDescription = step.getShortDescription();
+        String description = step.getDescription();
+
+        if (imgUrl != "") {
+            Uri imgUri = Uri.parse(imgUrl).buildUpon().build();
+            Picasso.with(getContext()).load(imgUri).into(mThumbnailImg);
+        }
+
+        mFoodName.setText(recipe.getName());
+        mShortDescription.setText(shortDescription);
+        mDescription.setText(description);
+
+    }
+
 
 
     /**
@@ -191,31 +234,7 @@ public class ViewRecipeStepFragment extends Fragment
         return null;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateUI(mRecipeId, mStepId);
-    }
 
-    private void updateUI(int recipeId, int stepId) {
-        RecipeLab recipeLab = RecipeLab.get(getContext());
-        Recipe recipe = recipeLab.getRecipe(recipeId);
-        Step step = recipeLab.getStep(recipeId, stepId);
-
-        String imgUrl = step.getThumbnailURL();
-        String shortDescription = step.getShortDescription();
-        String description = step.getDescription();
-
-        if (imgUrl != "") {
-            Uri imgUri = Uri.parse(imgUrl).buildUpon().build();
-            Picasso.with(getContext()).load(imgUri).into(mThumbnailImg);
-        }
-
-        mFoodName.setText(recipe.getName());
-        mShortDescription.setText(shortDescription);
-        mDescription.setText(description);
-
-    }
 
     /**
      * Initialize ExoPlayer

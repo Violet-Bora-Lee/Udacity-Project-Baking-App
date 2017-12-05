@@ -67,11 +67,14 @@ public class RecipeLab {
         return null;
     }
 
+
     // getter of a step
-    public Step getStep(int recipeId, int stepId) {
+    public Step getStep(int recipeId, int stepId, int currentIndex) {
         List<Step> steps = sRecipeLab.getSteps(recipeId);
         for (Step step : steps) {
             if (step.getId() == stepId) {
+                return step;
+            } else if (steps.indexOf(step) == currentIndex) {
                 return step;
             }
         }

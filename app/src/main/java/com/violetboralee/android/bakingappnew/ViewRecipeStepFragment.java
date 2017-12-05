@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
@@ -83,19 +85,32 @@ public class ViewRecipeStepFragment extends Fragment
         return fragment;
     }
 
+    public static ViewRecipeStepFragment updateInstance(int recipeId, int stepId, int currentIndex) {
+        Bundle bundle = new Bundle();
+
+        bundle.putInt(ARG_RECIPE_ID, recipeId);
+        bundle.putInt(ARG_STEP_ID, stepId);
+        bundle.putInt(ARG_CURRENT_INDEX, currentIndex);
+
+        ViewRecipeStepFragment fragment = new ViewRecipeStepFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_view_recipe_step, container, false);
 
-        mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
-        mStepId = getArguments().getInt(ARG_STEP_ID);
+        mRecipeId = getArguments().getInt(ARG_RECIPE_ID); // 3
+        mStepId = getArguments().getInt(ARG_STEP_ID); // 7
 
         mSteps = RecipeLab.get(getActivity()).getSteps(mRecipeId);
-        mSizeOfSteps = mSteps.size();
-        mStep = RecipeLab.get(getActivity()).getStep(mRecipeId, mStepId);
-        mCurrentIndex = getArguments().getInt(ARG_CURRENT_INDEX);
+        mSizeOfSteps = mSteps.size(); // 12
+        mCurrentIndex = getArguments().getInt(ARG_CURRENT_INDEX); // 7
+
+        mStep = RecipeLab.get(getActivity()).getStep(mRecipeId, mStepId, mCurrentIndex);
 
         // Initialize the player view.
         mPlayerView = (SimpleExoPlayerView) v.findViewById(R.id.exo_player_view);
@@ -119,7 +134,7 @@ public class ViewRecipeStepFragment extends Fragment
         mShortDescription = (TextView) v.findViewById(R.id.tv_short_description);
         mDescription = (TextView) v.findViewById(R.id.tv_description);
 
-        updateUI(mRecipeId, mStepId);
+        updateUI(mRecipeId, mStepId, mCurrentIndex);
 
         Button prevStep = (Button) v.findViewById(R.id.btn_previous);
         prevStep.setOnClickListener(this);
@@ -133,7 +148,7 @@ public class ViewRecipeStepFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        updateUI(mRecipeId, mStepId);
+        updateUI(mRecipeId, mStepId, mCurrentIndex);
     }
 
     @Override
@@ -147,29 +162,57 @@ public class ViewRecipeStepFragment extends Fragment
                     }
                     mCurrentIndex--; // Decrease the index as long as the index is greater than 0
                     mStepId--;
+
+                    // TODO: Change the fragment
+                    updateFragment();
+
                 } else {
                     Toast.makeText(getContext(), "You are in a first step!", Toast.LENGTH_LONG).show();
                 }
-                // TODO: Change the fragment
                 return;
 
             case R.id.btn_next:
 //                Toast.makeText(getContext(), "Next Button", Toast.LENGTH_LONG).show();
                 if (mCurrentIndex < mSizeOfSteps - 1) {
+                    if (mExoPlayer != null) {
+                        mExoPlayer.stop();
+                    }
                     mCurrentIndex++; // Increase the index as long as the index remains <= the size of the List of Steps
+                    mStepId++;
+
+                    updateFragment();
+
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                    ViewRecipeStepFragment updatedFragment = updateInstance(mRecipeId, mStepId, mCurrentIndex);
+//                    fragmentTransaction.addToBackStack("updated_fragment");
+//                    fragmentTransaction.hide(ViewRecipeStepFragment.this);
+//                    fragmentTransaction.add(R.id.fragment_container, updatedFragment);
+//                    fragmentTransaction.commit();
+//
+
                 } else {
                     Toast.makeText(getContext(), "Your are in the last step!", Toast.LENGTH_LONG).show();
                 }
-                // TODO: Change the fragment
                 return;
         }
 
     }
 
-    private void updateUI(int recipeId, int stepId) {
+    private void updateFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ViewRecipeStepFragment updatedFragment = newInstance(mRecipeId, mStepId, mCurrentIndex);
+        fragmentTransaction.addToBackStack("updated_fragment");
+        fragmentTransaction.hide(ViewRecipeStepFragment.this);
+        fragmentTransaction.add(R.id.fragment_container, updatedFragment);
+        fragmentTransaction.commit();
+    }
+
+    private void updateUI(int recipeId, int stepId, int currentIndex) {
         RecipeLab recipeLab = RecipeLab.get(getContext());
         Recipe recipe = recipeLab.getRecipe(recipeId);
-        Step step = recipeLab.getStep(recipeId, stepId);
+        Step step = recipeLab.getStep(recipeId, stepId, currentIndex);
 
         String imgUrl = step.getThumbnailURL();
         String shortDescription = step.getShortDescription();

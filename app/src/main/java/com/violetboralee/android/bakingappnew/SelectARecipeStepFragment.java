@@ -74,6 +74,12 @@ public class SelectARecipeStepFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        updateUI(mRecipeId);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         updateUI(mRecipeId);

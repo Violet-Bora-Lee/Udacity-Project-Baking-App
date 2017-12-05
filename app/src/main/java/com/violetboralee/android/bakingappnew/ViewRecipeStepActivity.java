@@ -26,6 +26,4 @@ public class ViewRecipeStepActivity extends SingleFragmentActivity {
         int currentIndex = getIntent().getIntExtra(EXTRA_CURRENT_INDEX, 0);
         return ViewRecipeStepFragment.newInstance(recipeId, stepId, currentIndex);
     }
-
-
 }

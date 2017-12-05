@@ -30,7 +30,7 @@
                 android:id="@+id/list_item_recipe_image"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:padding="5dp"
+                android:padding="15dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_cake"
                 />
@@ -57,8 +57,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:paddingStart="13dp"
-                    android:textSize="18sp"
+                    android:paddingStart="25dp"
+                    android:textSize="15sp"
                     tools:text="8 Servings"
                     />
 
@@ -67,8 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:paddingStart="13dp"
-                    android:textSize="18sp"
+                    android:paddingStart="25dp"
+                    android:textSize="15sp"
                     tools:text="6 Steps"
                     />
 

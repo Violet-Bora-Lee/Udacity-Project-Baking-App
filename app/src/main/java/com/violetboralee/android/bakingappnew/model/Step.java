@@ -1,5 +1,6 @@
 package com.violetboralee.android.bakingappnew.model;
 
+
 /**
  * Created by bora on 16/11/2017.
  */
@@ -41,6 +42,5 @@ public class Step {
     public String getThumbnailURL() {
         return thumbnailURL;
     }
-
 
 }

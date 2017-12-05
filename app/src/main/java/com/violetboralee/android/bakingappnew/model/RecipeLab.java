@@ -77,4 +77,9 @@ public class RecipeLab {
         }
         return null;
     }
+
+    public int getStepsCurrentIndex(int recipeId, Step step) {
+        List<Step> steps = sRecipeLab.getSteps(recipeId);
+        return steps.indexOf(step);
+    }
 }

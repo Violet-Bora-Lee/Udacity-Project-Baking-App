@@ -64,12 +64,11 @@ public class ViewRecipeStepFragment extends Fragment
     private TextView mDescription;
 
     private List<Step> mSteps;
+    private Step mStep;
     private int mRecipeId;
     private int mStepId;
     private int mSizeOfSteps;
     private int mCurrentIndex;
-
-    private Step mStep;
 
 
     public static ViewRecipeStepFragment newInstance(int recipeId, int stepId, int currentIndex) {
@@ -136,7 +135,6 @@ public class ViewRecipeStepFragment extends Fragment
         super.onResume();
         updateUI(mRecipeId, mStepId);
     }
-
 
     @Override
     public void onClick(View v) {

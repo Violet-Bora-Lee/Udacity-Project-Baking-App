@@ -51,8 +51,8 @@ public class ViewRecipeStepPagerActivity extends FragmentActivity {
         mViewPager.setAdapter(new FragmentPagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {
-                Step step = mSteps.get(stepId);
-                return ViewRecipeStepFragment.newInstance(recipeId, stepId, currentIndex);
+                Step step = mSteps.get(position);
+                return ViewRecipeStepFragment.newInstance(recipeId, step.getId(), step.getId());
             }
 
             @Override

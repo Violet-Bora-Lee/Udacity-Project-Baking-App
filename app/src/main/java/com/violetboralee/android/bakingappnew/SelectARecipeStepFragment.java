@@ -1,6 +1,6 @@
 package com.violetboralee.android.bakingappnew;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,6 +36,7 @@ public class SelectARecipeStepFragment extends Fragment {
 
     private int mRecipeId;
 
+    private Callbacks mCallbacks;
 
     public static SelectARecipeStepFragment newInstance(int recipeId) {
         Bundle args = new Bundle();
@@ -46,6 +47,11 @@ public class SelectARecipeStepFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
+    }
 
     @Nullable
     @Override
@@ -71,6 +77,12 @@ public class SelectARecipeStepFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateUI(mRecipeId);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     private void updateUI(int recipeId) {
@@ -101,6 +113,9 @@ public class SelectARecipeStepFragment extends Fragment {
         }
     }
 
+    public interface Callbacks {
+        void onStepSelected(int recipeId, Step step);
+    }
 
     private class IngredientHolder extends RecyclerView.ViewHolder {
         private Ingredient mIngredient;
@@ -190,8 +205,8 @@ public class SelectARecipeStepFragment extends Fragment {
 
             RecipeLab recipeLab = RecipeLab.get(getActivity());
             mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
-            List<Step> steps = recipeLab.getSteps(mRecipeId);
-            mCurrentIndex = steps.indexOf(mStep);
+
+            mCurrentIndex = recipeLab.getStepsCurrentIndex(mRecipeId, mStep);
 
             mStepNumber.setText(stepIdString);
             mShortDescriptionTextView.setText(shortDescription);
@@ -200,9 +215,7 @@ public class SelectARecipeStepFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = ViewRecipeStepActivity
-                    .newIntent(getActivity(), mRecipeId, mStepId, mCurrentIndex);
-            startActivity(intent);
+            mCallbacks.onStepSelected(mRecipeId, mStep);
         }
     }
 

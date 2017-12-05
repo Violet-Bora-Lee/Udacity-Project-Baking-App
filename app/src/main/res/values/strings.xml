@@ -11,4 +11,6 @@
     <string name="next_step">Next</string>
 
     <string name="ingredient_introduction">What you need to make %1$s!</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

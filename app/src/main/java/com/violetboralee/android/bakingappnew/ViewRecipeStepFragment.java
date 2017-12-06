@@ -85,17 +85,17 @@ public class ViewRecipeStepFragment extends Fragment
         return fragment;
     }
 
-    public static ViewRecipeStepFragment updateInstance(int recipeId, int stepId, int currentIndex) {
-        Bundle bundle = new Bundle();
-
-        bundle.putInt(ARG_RECIPE_ID, recipeId);
-        bundle.putInt(ARG_STEP_ID, stepId);
-        bundle.putInt(ARG_CURRENT_INDEX, currentIndex);
-
-        ViewRecipeStepFragment fragment = new ViewRecipeStepFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+//    public static ViewRecipeStepFragment updatedInstance(int recipeId, int stepId, int currentIndex) {
+//        Bundle bundle = new Bundle();
+//
+//        bundle.putInt(ARG_RECIPE_ID, recipeId);
+//        bundle.putInt(ARG_STEP_ID, stepId);
+//        bundle.putInt(ARG_CURRENT_INDEX, currentIndex);
+//
+//        ViewRecipeStepFragment fragment = new ViewRecipeStepFragment();
+//        fragment.setArguments(bundle);
+//        return fragment;
+//    }
 
     @Nullable
     @Override
@@ -155,7 +155,6 @@ public class ViewRecipeStepFragment extends Fragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_previous:
-//                Toast.makeText(getContext(), "Prev Button", Toast.LENGTH_LONG).show();
                 if (mStepId > 0) {
                     if (mExoPlayer != null) {
                         mExoPlayer.stop();
@@ -163,7 +162,6 @@ public class ViewRecipeStepFragment extends Fragment
                     mCurrentIndex--; // Decrease the index as long as the index is greater than 0
                     mStepId--;
 
-                    // TODO: Change the fragment
                     updateFragment();
 
                 } else {
@@ -172,7 +170,6 @@ public class ViewRecipeStepFragment extends Fragment
                 return;
 
             case R.id.btn_next:
-//                Toast.makeText(getContext(), "Next Button", Toast.LENGTH_LONG).show();
                 if (mCurrentIndex < mSizeOfSteps - 1) {
                     if (mExoPlayer != null) {
                         mExoPlayer.stop();
@@ -181,15 +178,6 @@ public class ViewRecipeStepFragment extends Fragment
                     mStepId++;
 
                     updateFragment();
-
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    ViewRecipeStepFragment updatedFragment = updateInstance(mRecipeId, mStepId, mCurrentIndex);
-//                    fragmentTransaction.addToBackStack("updated_fragment");
-//                    fragmentTransaction.hide(ViewRecipeStepFragment.this);
-//                    fragmentTransaction.add(R.id.fragment_container, updatedFragment);
-//                    fragmentTransaction.commit();
-//
 
                 } else {
                     Toast.makeText(getContext(), "Your are in the last step!", Toast.LENGTH_LONG).show();
@@ -205,7 +193,7 @@ public class ViewRecipeStepFragment extends Fragment
         ViewRecipeStepFragment updatedFragment = newInstance(mRecipeId, mStepId, mCurrentIndex);
         fragmentTransaction.addToBackStack("updated_fragment");
         fragmentTransaction.hide(ViewRecipeStepFragment.this);
-        fragmentTransaction.add(R.id.fragment_container, updatedFragment);
+        fragmentTransaction.add(R.id.detail_fragment_container, updatedFragment);
         fragmentTransaction.commit();
     }
 

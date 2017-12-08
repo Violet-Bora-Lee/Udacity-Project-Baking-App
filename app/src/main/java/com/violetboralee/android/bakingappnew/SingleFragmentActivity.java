@@ -13,7 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 public abstract class SingleFragmentActivity extends AppCompatActivity {
     protected abstract Fragment createFragment();
 
-    @LayoutRes
+    // Subclasses of SingleFragmentActivity can choose to override this method
+    // to return a layout other than activity_fragment
+    @LayoutRes  //any implementation of this method should return a valid layout resource ID
     protected int getLayoutResId() {
         return R.layout.activity_fragment;
     }

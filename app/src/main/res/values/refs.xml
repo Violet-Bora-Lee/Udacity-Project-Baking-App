@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    // Default alias resource which refers single panel layout
     <item name="activity_masterdetail" type="layout">@layout/activity_fragment</item>
+    <bool name="isTablet">false</bool>
 </resources>

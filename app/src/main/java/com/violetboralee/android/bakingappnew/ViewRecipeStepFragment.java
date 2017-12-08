@@ -65,6 +65,8 @@ public class ViewRecipeStepFragment extends Fragment
     private TextView mShortDescription;
     private TextView mDescription;
 
+    private TextView mGuideUserToChooseOneOfTheSteps;
+
     private List<Step> mSteps;
     private Step mStep;
     private int mRecipeId;
@@ -96,6 +98,15 @@ public class ViewRecipeStepFragment extends Fragment
 //        fragment.setArguments(bundle);
 //        return fragment;
 //    }
+//
+
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        mCallbacks = context;
+//        mCallbacks = (Callbacks) context;
+//    }
+
 
     @Nullable
     @Override
@@ -103,14 +114,15 @@ public class ViewRecipeStepFragment extends Fragment
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_view_recipe_step, container, false);
 
-        mRecipeId = getArguments().getInt(ARG_RECIPE_ID); // 3
-        mStepId = getArguments().getInt(ARG_STEP_ID); // 7
+        mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
+        mStepId = getArguments().getInt(ARG_STEP_ID);
 
         mSteps = RecipeLab.get(getActivity()).getSteps(mRecipeId);
-        mSizeOfSteps = mSteps.size(); // 12
-        mCurrentIndex = getArguments().getInt(ARG_CURRENT_INDEX); // 7
+        mSizeOfSteps = mSteps.size();
+        mCurrentIndex = getArguments().getInt(ARG_CURRENT_INDEX);
 
         mStep = RecipeLab.get(getActivity()).getStep(mRecipeId, mStepId, mCurrentIndex);
+
 
         // Initialize the player view.
         mPlayerView = (SimpleExoPlayerView) v.findViewById(R.id.exo_player_view);
@@ -133,6 +145,8 @@ public class ViewRecipeStepFragment extends Fragment
         mThumbnailImg = (ImageView) v.findViewById(R.id.iv_thumbnail_image);
         mShortDescription = (TextView) v.findViewById(R.id.tv_short_description);
         mDescription = (TextView) v.findViewById(R.id.tv_description);
+        mGuideUserToChooseOneOfTheSteps = (TextView) v.findViewById(R.id.tv_guide_user_to_choose_step);
+
 
         updateUI(mRecipeId, mStepId, mCurrentIndex);
 
@@ -145,6 +159,7 @@ public class ViewRecipeStepFragment extends Fragment
         return v;
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
@@ -154,6 +169,7 @@ public class ViewRecipeStepFragment extends Fragment
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            // Previous Button
             case R.id.btn_previous:
                 if (mStepId > 0) {
                     if (mExoPlayer != null) {
@@ -169,6 +185,7 @@ public class ViewRecipeStepFragment extends Fragment
                 }
                 return;
 
+            // Next Button
             case R.id.btn_next:
                 if (mCurrentIndex < mSizeOfSteps - 1) {
                     if (mExoPlayer != null) {
@@ -187,17 +204,39 @@ public class ViewRecipeStepFragment extends Fragment
 
     }
 
+    /**
+     * update fragment when the user click previous or next button
+     */
     private void updateFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ViewRecipeStepFragment updatedFragment = newInstance(mRecipeId, mStepId, mCurrentIndex);
-        fragmentTransaction.addToBackStack("updated_fragment");
-        fragmentTransaction.hide(ViewRecipeStepFragment.this);
-        fragmentTransaction.add(R.id.detail_fragment_container, updatedFragment);
-        fragmentTransaction.commit();
+
+        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+
+        if (tabletSize) {   // If the device is tablet
+            ViewRecipeStepFragment updatedFragment = newInstance(mRecipeId, mStepId, mCurrentIndex);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.addToBackStack("updated_fragment")
+                    .hide(ViewRecipeStepFragment.this)
+                    // add the fragment in the detail_fragment_container
+                    .add(R.id.detail_fragment_container, updatedFragment)
+                    .commit();
+
+        } else {    // If the device is handheld
+            ViewRecipeStepFragment updatedFragment = newInstance(mRecipeId, mStepId, mCurrentIndex);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.addToBackStack("updated_fragment")
+                    .hide(ViewRecipeStepFragment.this)
+                    // add the fragment in the fragment_container layout
+                    .add(R.id.fragment_container, updatedFragment)
+                    .commit();
+        }
     }
 
     private void updateUI(int recipeId, int stepId, int currentIndex) {
+
         RecipeLab recipeLab = RecipeLab.get(getContext());
         Recipe recipe = recipeLab.getRecipe(recipeId);
         Step step = recipeLab.getStep(recipeId, stepId, currentIndex);
@@ -214,9 +253,7 @@ public class ViewRecipeStepFragment extends Fragment
         mFoodName.setText(recipe.getName());
         mShortDescription.setText(shortDescription);
         mDescription.setText(description);
-
     }
-
 
 
     /**

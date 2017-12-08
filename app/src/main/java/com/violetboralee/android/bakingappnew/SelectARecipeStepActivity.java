@@ -30,11 +30,15 @@ public class SelectARecipeStepActivity extends SingleFragmentActivity
 
     @Override
     protected int getLayoutResId() {
+        // For devices
+        // that are under sw600dp(phone interface), it will return @layout/activity_fragment(single-pane layout)
+        // that are over a sw600dp(table interface), it will return @layout/activity_twopane(two-pane layout)
         return R.layout.activity_masterdetail;
     }
 
     @Override
     public void onStepSelected(int recipeId, Step step) {
+        // For the devices that are under sw600dp
         if (findViewById(R.id.detail_fragment_container) == null) {
             Intent intent = ViewRecipeStepActivity
                     .newIntent(
@@ -45,7 +49,7 @@ public class SelectARecipeStepActivity extends SingleFragmentActivity
                     );
             startActivity(intent);
 
-        } else {
+        } else { // For the devices that are over a sw600dp
             Fragment newDetail = ViewRecipeStepFragment.newInstance(
                     recipeId,
                     step.getId(),

@@ -32,6 +32,7 @@ public class SelectARecipeFragment extends Fragment {
 
     private RecyclerView mRecipeRecyclerView;
     private RecipeAdapter mAdapter;
+    private TextView mErrorMessage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +49,9 @@ public class SelectARecipeFragment extends Fragment {
 
         mRecipeRecyclerView = (RecyclerView) view.findViewById(R.id.recipes_recycler_view);
         mRecipeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mErrorMessage = (TextView) view.findViewById(R.id.tv_error_message_display);
+
         updateUI();
 
         return view;
@@ -88,8 +92,15 @@ public class SelectARecipeFragment extends Fragment {
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 Log.e("Error fetching recipes", t.getMessage());
 
+                showErrorMessage();
             }
         });
+
+    }
+
+    private void showErrorMessage() {
+        mRecipeRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorMessage.setVisibility(View.VISIBLE);
 
     }
 

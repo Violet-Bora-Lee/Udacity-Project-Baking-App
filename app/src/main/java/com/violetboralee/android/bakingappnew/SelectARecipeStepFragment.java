@@ -1,6 +1,6 @@
 package com.violetboralee.android.bakingappnew;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -47,10 +47,16 @@ public class SelectARecipeStepFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * called when a fragment is attached to an activity
+     *
+     * @param context
+     */
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mCallbacks = (Callbacks) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+        // Activity is a subclass of context, so onAttach passes a Context as a parameter
     }
 
     @Nullable
@@ -88,7 +94,8 @@ public class SelectARecipeStepFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks = null;
+        mCallbacks = null;  // setting the variable to null because
+        // afterward I cannot access the activity or count on the activity continuing to exist
     }
 
     private void updateUI(int recipeId) {
@@ -119,7 +126,13 @@ public class SelectARecipeStepFragment extends Fragment {
         }
     }
 
+    /**
+     * Delegating functionality back to the hosting activity
+     * Required interface for hosting activities
+     */
     public interface Callbacks {
+        // defines work that the fragment needs done by its hosting activity,
+        // SelectARecipeStepActivity
         void onStepSelected(int recipeId, Step step);
     }
 

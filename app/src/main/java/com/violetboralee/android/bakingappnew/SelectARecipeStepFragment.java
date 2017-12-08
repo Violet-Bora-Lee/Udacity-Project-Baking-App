@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import java.util.List;
 public class SelectARecipeStepFragment extends Fragment {
 
     private static final String ARG_RECIPE_ID = "recipe";
+    private static final String LOG_TAG = SelectARecipeStepFragment.class.getSimpleName();
 
     private RecyclerView mIngredientsRecyclerView;
     private IngredientAdapter mIngredientAdapter;
@@ -36,7 +38,9 @@ public class SelectARecipeStepFragment extends Fragment {
 
     private int mRecipeId;
 
-    private Callbacks mCallbacks;
+    // The callback is a method named onStepClickListener that contains information about
+    // which step a user has clicked
+    private onStepClickListener mCallback;
 
     public static SelectARecipeStepFragment newInstance(int recipeId) {
         Bundle args = new Bundle();
@@ -55,8 +59,17 @@ public class SelectARecipeStepFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCallbacks = (Callbacks) context;
-        // Activity is a subclass of context, so onAttach passes a Context as a parameter
+
+        Log.i(LOG_TAG, "--> onAttach");
+
+        // This makes sure that the host activity has implemented the callback interface
+        // If not, it throws an exception
+        try {
+            mCallback = (onStepClickListener) context;
+            // Activity is a subclass of context, so onAttach passes a Context as a parameter
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnStepClickListener");
+        }
     }
 
     @Nullable
@@ -64,6 +77,8 @@ public class SelectARecipeStepFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_select_a_recipe_step, container, false);
+
+        Log.i(LOG_TAG, "--> onCreateView");
 
         mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
 
@@ -82,23 +97,35 @@ public class SelectARecipeStepFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.i(LOG_TAG, "--> onStart");
+
         updateUI(mRecipeId);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        Log.i(LOG_TAG, "--> onResume");
+
         updateUI(mRecipeId);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks = null;  // setting the variable to null because
+
+        Log.i(LOG_TAG, "--> onDetach");
+
+        mCallback = null;  // setting the variable to null because
         // afterward I cannot access the activity or count on the activity continuing to exist
     }
 
     private void updateUI(int recipeId) {
+
+        Log.i(LOG_TAG, "--> updateUI");
+
+
         RecipeLab recipeLab = RecipeLab.get(getActivity());
         String foodName = recipeLab.getRecipe(recipeId).getName();
 
@@ -130,7 +157,7 @@ public class SelectARecipeStepFragment extends Fragment {
      * Delegating functionality back to the hosting activity
      * Required interface for hosting activities
      */
-    public interface Callbacks {
+    public interface onStepClickListener {
         // defines work that the fragment needs done by its hosting activity,
         // SelectARecipeStepActivity
         void onStepSelected(int recipeId, Step step);
@@ -234,7 +261,7 @@ public class SelectARecipeStepFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            mCallbacks.onStepSelected(mRecipeId, mStep);
+            mCallback.onStepSelected(mRecipeId, mStep);
         }
     }
 

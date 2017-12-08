@@ -65,7 +65,6 @@ public class ViewRecipeStepFragment extends Fragment
     private TextView mShortDescription;
     private TextView mDescription;
 
-    private TextView mGuideUserToChooseOneOfTheSteps;
 
     private List<Step> mSteps;
     private Step mStep;
@@ -76,6 +75,8 @@ public class ViewRecipeStepFragment extends Fragment
 
 
     public static ViewRecipeStepFragment newInstance(int recipeId, int stepId, int currentIndex) {
+        Log.i(LOG_TAG, "--> newInstance");
+
         Bundle bundle = new Bundle();
 
         bundle.putInt(ARG_RECIPE_ID, recipeId);
@@ -87,25 +88,6 @@ public class ViewRecipeStepFragment extends Fragment
         return fragment;
     }
 
-//    public static ViewRecipeStepFragment updatedInstance(int recipeId, int stepId, int currentIndex) {
-//        Bundle bundle = new Bundle();
-//
-//        bundle.putInt(ARG_RECIPE_ID, recipeId);
-//        bundle.putInt(ARG_STEP_ID, stepId);
-//        bundle.putInt(ARG_CURRENT_INDEX, currentIndex);
-//
-//        ViewRecipeStepFragment fragment = new ViewRecipeStepFragment();
-//        fragment.setArguments(bundle);
-//        return fragment;
-//    }
-//
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        mCallbacks = context;
-//        mCallbacks = (Callbacks) context;
-//    }
 
 
     @Nullable
@@ -113,6 +95,7 @@ public class ViewRecipeStepFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_view_recipe_step, container, false);
+        Log.i(LOG_TAG, "--> onCreateView");
 
         mRecipeId = getArguments().getInt(ARG_RECIPE_ID);
         mStepId = getArguments().getInt(ARG_STEP_ID);
@@ -145,8 +128,6 @@ public class ViewRecipeStepFragment extends Fragment
         mThumbnailImg = (ImageView) v.findViewById(R.id.iv_thumbnail_image);
         mShortDescription = (TextView) v.findViewById(R.id.tv_short_description);
         mDescription = (TextView) v.findViewById(R.id.tv_description);
-        mGuideUserToChooseOneOfTheSteps = (TextView) v.findViewById(R.id.tv_guide_user_to_choose_step);
-
 
         updateUI(mRecipeId, mStepId, mCurrentIndex);
 
@@ -163,7 +144,14 @@ public class ViewRecipeStepFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        Log.i(LOG_TAG, "--> onResume");
         updateUI(mRecipeId, mStepId, mCurrentIndex);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // TODO 프래그먼트 상태저장 구현하기 Lesson2, Exercise 16참고
     }
 
     @Override
@@ -301,7 +289,6 @@ public class ViewRecipeStepFragment extends Fragment
     }
 
 
-
     /**
      * Initialize ExoPlayer
      *
@@ -399,7 +386,7 @@ public class ViewRecipeStepFragment extends Fragment
     }
 
     /**
-     * Media Session Callbacks, where all external clients control the player
+     * Media Session onStepClickListener, where all external clients control the player
      */
     private class MySessionCallback extends MediaSessionCompat.Callback {
         @Override

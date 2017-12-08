@@ -11,8 +11,8 @@
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4"
-        />
+        android:layout_weight="4">
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/detail_fragment_container"
@@ -24,11 +24,11 @@
             android:id="@+id/tv_guide_user_to_choose_step"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/guide_user_to_choose_step"
-            android:visibility="invisible"
             />
 
     </FrameLayout>
+
 
 </LinearLayout>

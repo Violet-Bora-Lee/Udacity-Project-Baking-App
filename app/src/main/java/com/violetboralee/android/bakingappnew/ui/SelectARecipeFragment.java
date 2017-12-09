@@ -1,4 +1,4 @@
-package com.violetboralee.android.bakingappnew;
+package com.violetboralee.android.bakingappnew.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.violetboralee.android.bakingappnew.R;
 import com.violetboralee.android.bakingappnew.model.Recipe;
 import com.violetboralee.android.bakingappnew.model.RecipeLab;
 import com.violetboralee.android.bakingappnew.retrofit.BakingAppClient;

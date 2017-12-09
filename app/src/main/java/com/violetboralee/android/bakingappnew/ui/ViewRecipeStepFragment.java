@@ -1,4 +1,4 @@
-package com.violetboralee.android.bakingappnew;
+package com.violetboralee.android.bakingappnew.ui;
 
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -37,6 +37,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
+import com.violetboralee.android.bakingappnew.R;
 import com.violetboralee.android.bakingappnew.model.Recipe;
 import com.violetboralee.android.bakingappnew.model.RecipeLab;
 import com.violetboralee.android.bakingappnew.model.Step;
@@ -192,37 +193,6 @@ public class ViewRecipeStepFragment extends Fragment
 
     }
 
-    /**
-     * update fragment when the user click previous or next button
-     */
-    private void updateFragment() {
-
-        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
-
-        if (tabletSize) {   // If the device is tablet
-            ViewRecipeStepFragment updatedFragment = newInstance(mRecipeId, mStepId, mCurrentIndex);
-
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.addToBackStack("updated_fragment")
-                    .hide(ViewRecipeStepFragment.this)
-                    // add the fragment in the detail_fragment_container
-                    .add(R.id.detail_fragment_container, updatedFragment)
-                    .commit();
-
-        } else {    // If the device is handheld
-            ViewRecipeStepFragment updatedFragment = newInstance(mRecipeId, mStepId, mCurrentIndex);
-
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.addToBackStack("updated_fragment")
-                    .hide(ViewRecipeStepFragment.this)
-                    // add the fragment in the fragment_container layout
-                    .add(R.id.fragment_container, updatedFragment)
-                    .commit();
-        }
-    }
-
     private void updateUI(int recipeId, int stepId, int currentIndex) {
 
         RecipeLab recipeLab = RecipeLab.get(getContext());
@@ -242,6 +212,37 @@ public class ViewRecipeStepFragment extends Fragment
         mShortDescription.setText(shortDescription);
         mDescription.setText(description);
     }
+
+
+    /**
+     * update fragment when the user click previous or next button
+     */
+    private void updateFragment() {
+
+        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+
+        if (tabletSize) {   // If the device is tablet
+            ViewRecipeStepFragment updatedFragment = newInstance(mRecipeId, mStepId, mCurrentIndex);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction
+                    // add the fragment in the detail_fragment_container
+                    .replace(R.id.detail_fragment_container, updatedFragment)
+                    .commit();
+
+        } else {    // If the device is handheld
+            ViewRecipeStepFragment updatedFragment = newInstance(mRecipeId, mStepId, mCurrentIndex);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction
+                    // add the fragment in the fragment_container layout
+                    .replace(R.id.fragment_container, updatedFragment)
+                    .commit();
+        }
+    }
+
 
 
     /**

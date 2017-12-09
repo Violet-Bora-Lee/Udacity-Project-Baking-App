@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SelectARecipeActivity">
+        <activity android:name=".ui.SelectARecipeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -19,30 +19,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SelectARecipeStepActivity"
-            android:parentActivityName=".SelectARecipeActivity">
+            android:name=".ui.SelectARecipeStepActivity"
+            android:parentActivityName=".ui.SelectARecipeActivity">
         </activity>
         <activity
-            android:name=".ViewRecipeStepActivity"
-            android:parentActivityName=".SelectARecipeStepActivity">
+            android:name=".ui.ViewRecipeStepActivity"
+            android:parentActivityName=".ui.SelectARecipeStepActivity">
         </activity>
 
-        <!-- <activity -->
-        <!-- android:name=".ViewRecipeStepPagerActivity" -->
-        <!-- android:parentActivityName=".SelectARecipeStepActivity" -->
-        <!-- &gt; -->
-
-
-        <!-- </activity> -->
-
-        <receiver android:name=".RecipeWidgetProvider">
+        <receiver
+            android:name=".widget.RecipeWidgetProvider"
+            android:icon="@drawable/ic_art_track_black_24dp">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE2"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/recipe_widget_provider_info"/>
+                android:resource="@xml/recipe_widget_info"/>
         </receiver>
     </application>
 

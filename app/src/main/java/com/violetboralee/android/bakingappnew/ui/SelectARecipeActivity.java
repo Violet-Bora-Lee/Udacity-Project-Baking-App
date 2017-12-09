@@ -1,4 +1,4 @@
-package com.violetboralee.android.bakingappnew;
+package com.violetboralee.android.bakingappnew.ui;
 
 import android.support.v4.app.Fragment;
 

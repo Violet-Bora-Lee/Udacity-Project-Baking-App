@@ -1,10 +1,12 @@
-package com.violetboralee.android.bakingappnew;
+package com.violetboralee.android.bakingappnew.ui;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.violetboralee.android.bakingappnew.R;
 
 /**
  * Created by bora on 17/11/2017.

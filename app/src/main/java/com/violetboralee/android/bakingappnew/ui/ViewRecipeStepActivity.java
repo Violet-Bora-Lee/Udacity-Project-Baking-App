@@ -1,4 +1,4 @@
-package com.violetboralee.android.bakingappnew;
+package com.violetboralee.android.bakingappnew.ui;
 
 import android.content.Context;
 import android.content.Intent;

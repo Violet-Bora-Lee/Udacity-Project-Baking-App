@@ -1,4 +1,4 @@
-package com.violetboralee.android.bakingappnew;
+package com.violetboralee.android.bakingappnew.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -7,8 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+import com.violetboralee.android.bakingappnew.R;
+import com.violetboralee.android.bakingappnew.ui.SelectARecipeActivity;
+
 /**
  * Implementation of App Widget functionality.
+ * AppWidgetProvider defines the basic methods that allow me to programmatically interface withe the
+ * App Widget, based on broadcast events. Through it, I will receive broadcasts when the App Widget
+ * is updated, enabled and deleted.
  */
 public class RecipeWidgetProvider extends AppWidgetProvider {
 

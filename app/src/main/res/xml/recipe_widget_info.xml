@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--AppWidgetProviderInfo object describes the metadata for an App Widget, such as the App Widget's -->
+<!--layout, update frequency, and the AppWidgetProvider class. This should be defined in XML-->
+
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
                     android:initialKeyguardLayout="@layout/recipe_widget_provider"
                     android:initialLayout="@layout/recipe_widget_provider"

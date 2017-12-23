@@ -37,15 +37,27 @@ public class BakingWidgetProvider extends AppWidgetProvider {
         // call activity when widget is clicked, but resume activity from stack
         Intent appIntent = new Intent(context, SelectARecipeActivity.class);
 
+        // ACTION_MAIN: Start as a main entry point, does not expect to receive data.
         appIntent.addCategory(Intent.ACTION_MAIN);
+
+        // CATEGORY_LAUNCHER: Should be displayed in the top-level launcher
         appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        // FLAG_ACTIVITY_BROUGHT_TO_FRONT: This flag is not normally set by application code,
+        // but set for you by the system as described in the launchMode documentation for
+        // the singleTask mode.
+        // FLAG_ACTIVITY_SINGLE_TOP: If set, the activity will not be launched if it is already
+        // running at the top of the history stack.
         appIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        PendingIntent appPendingIntent = PendingIntent
+                .getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         views.setPendingIntentTemplate(R.id.widget_grid_view, appPendingIntent);
 
         // set the GridViewService intent to act as the adapter for the GridView
-        Intent intent = new Intent(context, GridWidgetService.class);
-        views.setRemoteAdapter(R.id.widget_grid_view, intent);
+        Intent gridViewServiceIntent = new Intent(context, GridWidgetService.class);
+        views.setRemoteAdapter(R.id.widget_grid_view, gridViewServiceIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

@@ -31,7 +31,7 @@ public class SelectARecipeStepFragment extends Fragment {
 
     private static final String ARG_RECIPE_ID = "recipe";
     private static final String LOG_TAG = SelectARecipeStepFragment.class.getSimpleName();
-    ArrayList<String> recipeIngredientForWidgets;
+    ArrayList<String> mRecipeIngredientForWidgets;
     private RecyclerView mIngredientsRecyclerView;
     private IngredientAdapter mIngredientAdapter;
     private TextView mIngredientIntroduction;
@@ -92,7 +92,7 @@ public class SelectARecipeStepFragment extends Fragment {
 
         updateUI(mRecipeId);
 
-        recipeIngredientForWidgets = new ArrayList<>();
+        mRecipeIngredientForWidgets = new ArrayList<>();
 
         updateWidget(mRecipeId);
 
@@ -105,36 +105,15 @@ public class SelectARecipeStepFragment extends Fragment {
         List<Ingredient> ingredients = recipeLab.getIngredients(recipeId);
 
         for (Ingredient ingredient : ingredients) {
-            recipeIngredientForWidgets.add(
+            mRecipeIngredientForWidgets.add(
                     TextUtil.capitalizeWords(ingredient.getIngredient())
                             + " (" + TextUtil.removeTrailingZero(Double.toString(ingredient.getQuantity())) + " " +
                             ingredient.getMeasure() + ")"
             );
         }
 
-
-//        mIngredient = ingredient;
-//
-//        String ingredientDetail = mIngredient.getIngredient();
-//        String trimmedIngredientDetail = TextUtil.capitalizeWords(ingredientDetail);
-//
-//        Double quantity = mIngredient.getQuantity();
-//        String quantityString = Double.toString(quantity);
-//        String trimmedQuantityString = TextUtil.removeTrailingZero(quantityString);
-//
-//        String measure = mIngredient.getMeasure();
-//
-//        String combinedIngredient = String.format(getResources().getString(R.string.ingredient),
-//                trimmedIngredientDetail,
-//                trimmedQuantityString,
-//                measure
-//        );
-
-//        mIngredientTextView.setText(combinedIngredient);
-
-
         // update the widget
-        UpdateIngredientService.startIngredientUpdateService(getContext(), recipeIngredientForWidgets);
+        UpdateIngredientService.startIngredientUpdateService(getContext(), mRecipeIngredientForWidgets);
     }
 
     @Override

@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
         <activity android:name=".ui.SelectARecipeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -18,18 +20,32 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+
         <activity
             android:name=".ui.SelectARecipeStepActivity"
             android:parentActivityName=".ui.SelectARecipeActivity">
         </activity>
+
+
         <activity
             android:name=".ui.ViewRecipeStepActivity"
             android:parentActivityName=".ui.SelectARecipeStepActivity">
         </activity>
 
+
+        <service
+            android:name=".widget.UpdateIngredientService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
+        <service
+            android:name=".widget.GridWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
         <receiver
-            android:name=".widget.RecipeWidgetProvider"
-            android:icon="@drawable/ic_art_track_black_24dp">
+            android:name=".widget.BakingWidgetProvider"
+            android:icon="@drawable/ic_widget_cake"
+            >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE2"/>

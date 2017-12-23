@@ -11,7 +11,7 @@
     <string name="next_step">Next</string>
 
     <string name="ingredient_introduction">What you need to make %1$s!</string>
-    <string name="appwidget_text">RECIPE INGREDIENTS WILL APPEAR HERE AFTER LAUNCHING DELICIOUS BAKING APP</string>
+    <string name="appwidget_text">CHOOSE ONE OF THE RECIPES\n INSIDE OF THE APP IN ORDER TO SEE\n THE RECIPE\'S INGREDIENTS</string>
     <string name="add_widget">Add widget</string>
-    <string name="guide_user_to_choose_step">Plese choose one of the steps you want to see</string>
+    <string name="guide_user_to_choose_step"> Please choose one of the steps you want to see</string>
 </resources>

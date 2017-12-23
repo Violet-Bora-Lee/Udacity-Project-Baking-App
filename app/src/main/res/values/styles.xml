@@ -36,4 +36,18 @@
         <item name="android:textColor">@color/whiteBackGround</item>
     </style>
 
+    <!--<style name="widgetTextView">-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:padding">20dp</item>-->
+    <!--<item name="android:background">@color/whiteBackGround</item>-->
+    <!--<item name="android:gravity">center_horizontal</item>-->
+    <!--<item name="android:textSize">14sp</item>-->
+    <!--<item name="android:textColor">@color/fontGray</item>-->
+    <!--</style>-->
+
+    <style name="AppTheme.Headline.Inverse" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+
 </resources>

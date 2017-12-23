@@ -4,12 +4,11 @@
 <!--layout, update frequency, and the AppWidgetProvider class. This should be defined in XML-->
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:initialKeyguardLayout="@layout/recipe_widget_provider"
-                    android:initialLayout="@layout/recipe_widget_provider"
-                    android:minHeight="40dp"
-                    android:minWidth="40dp"
-                    android:previewImage="@drawable/ingredient"
+                    android:initialKeyguardLayout="@layout/widget_initial_layout"
+                    android:initialLayout="@layout/widget_initial_layout"
+                    android:minHeight="180dp"
+                    android:minWidth="250dp"
                     android:resizeMode="horizontal|vertical"
-                    android:updatePeriodMillis="86400000"
+                    android:updatePeriodMillis="1800000"
                     android:widgetCategory="home_screen">
 </appwidget-provider>

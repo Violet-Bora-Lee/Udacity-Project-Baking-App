@@ -18,7 +18,9 @@ import com.violetboralee.android.bakingappnew.model.Ingredient;
 import com.violetboralee.android.bakingappnew.model.RecipeLab;
 import com.violetboralee.android.bakingappnew.model.Step;
 import com.violetboralee.android.bakingappnew.util.TextUtil;
+import com.violetboralee.android.bakingappnew.widget.UpdateIngredientService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,16 +31,13 @@ public class SelectARecipeStepFragment extends Fragment {
 
     private static final String ARG_RECIPE_ID = "recipe";
     private static final String LOG_TAG = SelectARecipeStepFragment.class.getSimpleName();
-
+    ArrayList<String> recipeIngredientForWidgets;
     private RecyclerView mIngredientsRecyclerView;
     private IngredientAdapter mIngredientAdapter;
     private TextView mIngredientIntroduction;
-
     private RecyclerView mStepsRecyclerView;
     private StepShortDescriptionAdapter mShortDescriptionAdapter;
-
     private int mRecipeId;
-
     // The callback is a method named onStepClickListener that contains information about
     // which step a user has clicked
     private onStepClickListener mCallback;
@@ -71,6 +70,7 @@ public class SelectARecipeStepFragment extends Fragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnStepClickListener");
         }
+
     }
 
     @Nullable
@@ -92,7 +92,49 @@ public class SelectARecipeStepFragment extends Fragment {
 
         updateUI(mRecipeId);
 
+        recipeIngredientForWidgets = new ArrayList<>();
+
+        updateWidget(mRecipeId);
+
         return view;
+    }
+
+    private void updateWidget(int recipeId) {
+
+        RecipeLab recipeLab = RecipeLab.get(getActivity());
+        List<Ingredient> ingredients = recipeLab.getIngredients(recipeId);
+
+        for (Ingredient ingredient : ingredients) {
+            recipeIngredientForWidgets.add(
+                    TextUtil.capitalizeWords(ingredient.getIngredient())
+                            + " (" + TextUtil.removeTrailingZero(Double.toString(ingredient.getQuantity())) + " " +
+                            ingredient.getMeasure() + ")"
+            );
+        }
+
+
+//        mIngredient = ingredient;
+//
+//        String ingredientDetail = mIngredient.getIngredient();
+//        String trimmedIngredientDetail = TextUtil.capitalizeWords(ingredientDetail);
+//
+//        Double quantity = mIngredient.getQuantity();
+//        String quantityString = Double.toString(quantity);
+//        String trimmedQuantityString = TextUtil.removeTrailingZero(quantityString);
+//
+//        String measure = mIngredient.getMeasure();
+//
+//        String combinedIngredient = String.format(getResources().getString(R.string.ingredient),
+//                trimmedIngredientDetail,
+//                trimmedQuantityString,
+//                measure
+//        );
+
+//        mIngredientTextView.setText(combinedIngredient);
+
+
+        // update the widget
+        UpdateIngredientService.startIngredientUpdateService(getContext(), recipeIngredientForWidgets);
     }
 
     @Override

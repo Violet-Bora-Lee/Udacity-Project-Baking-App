@@ -40,30 +40,6 @@ public class SelectARecipeStepActivity extends SingleFragmentActivity
         return R.layout.activity_masterdetail;
     }
 
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-//        super.onCreate(savedInstanceState, persistentState);
-//        Log.i(LOG_TAG, "--> onCreate");
-//
-//        // If the device that are over sw600dp
-//        if (!(findViewById(R.id.detail_fragment_container) == null)) {
-//            Log.i(LOG_TAG, "-->onCreate when the device that are over sw600dp");
-//
-//            int recipeId = getIntent().getIntExtra(EXTRA_RECIPE_ID, 1);
-//
-//            Fragment firstStepFragment = ViewRecipeStepFragment.newInstance(
-//                    recipeId,
-//                    0,
-//                    0);
-//
-//            // Add the fragment on the detail_fragment_container
-//            // containing first step information
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.detail_fragment_container, firstStepFragment)
-//                    .commit();
-//        }
-//    }
-
     /**
      * Define the behavior for onStepSelected
      *

@@ -25,6 +25,8 @@ public class BakingWidgetProvider extends AppWidgetProvider {
 
     public static final String REMOTEVIEW_INGREDIENT_LIST = "REMOTEVIEW_INGREDIENT_LIST";
     public static final String REMOTEVIEW_BUNDLE = "REMOTEVIEW_BUNDLE";
+    public static String ACTION_UPDATE_WIDGET = "android.appwidget.action.APPWIDGET_UPDATE2";
+
 
     static ArrayList<String> ingredientList = new ArrayList<>();
 
@@ -63,7 +65,9 @@ public class BakingWidgetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
-    public static void updateIngredientWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public static void updateIngredientWidgets(Context context,
+                                               AppWidgetManager appWidgetManager,
+                                               int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
@@ -74,7 +78,9 @@ public class BakingWidgetProvider extends AppWidgetProvider {
      *
      * @param context
      * @param appWidgetManager
-     * @param appWidgetIds     which an update is needed. This may be all of the AppWidget instances for the provider, or just a subset of them.
+     * @param appWidgetIds     which an update is needed.
+     *                         This may be all of the AppWidget instances for the provider,
+     *                         or just a subset of them.
      */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -118,11 +124,12 @@ public class BakingWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, BakingWidgetProvider.class));
+        int[] appWidgetIds = appWidgetManager
+                .getAppWidgetIds(new ComponentName(context, BakingWidgetProvider.class));
 
         final String action = intent.getAction();
 
-        if (action.equals("android.appwidget.action.APPWIDGET_UPDATE2")) {
+        if (action.equals(ACTION_UPDATE_WIDGET)) {
             ingredientList = intent.getExtras().getStringArrayList(FROM_ACTIVITY_INGREDIENTS_LIST);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_grid_view);
 

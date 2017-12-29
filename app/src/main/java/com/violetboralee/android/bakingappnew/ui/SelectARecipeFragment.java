@@ -1,6 +1,7 @@
 package com.violetboralee.android.bakingappnew.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,14 +15,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.violetboralee.android.bakingappnew.IdlingResource.SimpleIdlingResource;
 import com.violetboralee.android.bakingappnew.R;
 import com.violetboralee.android.bakingappnew.model.Recipe;
 import com.violetboralee.android.bakingappnew.model.RecipeLab;
 import com.violetboralee.android.bakingappnew.retrofit.BakingAppClient;
 import com.violetboralee.android.bakingappnew.retrofit.ServiceGenerator;
+import com.violetboralee.android.bakingappnew.util.ImageUtil;
 
 import java.util.List;
 
@@ -37,7 +41,7 @@ public class SelectARecipeFragment extends Fragment {
 
     private RecyclerView mRecipeRecyclerView;
     private RecipeAdapter mAdapter;
-    private TextView mErrorMessage;
+    private RelativeLayout mNoNetworkLayout;
 
     @Nullable
     private SimpleIdlingResource mIdlingResource;
@@ -57,7 +61,6 @@ public class SelectARecipeFragment extends Fragment {
 
     }
 
-    // TODO: 랜드스케이프모드시 그리드레이아웃으로 바뀌게 레이아웃파일 수정 및 코드 연동
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -67,7 +70,7 @@ public class SelectARecipeFragment extends Fragment {
         mRecipeRecyclerView = (RecyclerView) view.findViewById(R.id.recipes_recycler_view);
         mRecipeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mErrorMessage = (TextView) view.findViewById(R.id.tv_error_message_display);
+        mNoNetworkLayout = (RelativeLayout) view.findViewById(R.id.no_network);
 
         updateUI();
 
@@ -104,6 +107,7 @@ public class SelectARecipeFragment extends Fragment {
                     }
                 } else {
                     Log.e("Request failed: ", "Cannot request recipe json");
+                    mNoNetworkLayout.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -111,16 +115,9 @@ public class SelectARecipeFragment extends Fragment {
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 Log.e("Error fetching recipes", t.getMessage());
 
-                showErrorMessage();
+                mNoNetworkLayout.setVisibility(View.VISIBLE);
             }
         });
-
-    }
-
-    private void showErrorMessage() {
-        mRecipeRecyclerView.setVisibility(View.INVISIBLE);
-        mErrorMessage.setVisibility(View.VISIBLE);
-
     }
 
 
@@ -144,9 +141,35 @@ public class SelectARecipeFragment extends Fragment {
         public void bindRecipe(Recipe recipe) {
             mRecipe = recipe;
 
+            // Variables for recipe image
+            String thumbnailUrl = null;
+            String imageUrl = recipe.getImage();
+
+            // Check whether image path exists or not
+            for (int i = 0; i < recipe.getSteps().size(); i++) {
+                if (recipe.getSteps().get(i).getThumbnailURL() != "") {
+                    if (ImageUtil.isImageFile(recipe.getSteps().get(i).getThumbnailURL())) {
+                        thumbnailUrl = recipe.getSteps().get(i).getThumbnailURL();
+                    } else
+                        thumbnailUrl = null;
+                }
+            }
+
+            if (thumbnailUrl != "" && thumbnailUrl != null) {
+                Uri builtUri = Uri.parse(thumbnailUrl).buildUpon().build();
+                Picasso.with(getContext()).load(builtUri).into(mImageView);
+            } else if (imageUrl != "" && imageUrl != null) {
+                Uri builtUri = Uri.parse(thumbnailUrl).buildUpon().build();
+                Picasso.with(getContext()).load(builtUri).into(mImageView);
+            } else {
+                Picasso.with(getContext()).load(R.drawable.ic_cake).into(mImageView);
+            }
+
+            // Serving
             int serving = recipe.getServing();
             String servingString = String.valueOf(serving) + " servings";
 
+            // Number of Steps
             int stepNumber = recipe.getSteps().size();
             String stepNumberString = String.valueOf(stepNumber) + " steps";
 
@@ -188,7 +211,5 @@ public class SelectARecipeFragment extends Fragment {
         public int getItemCount() {
             return mRecipes.size();
         }
-
     }
-
 }

@@ -55,4 +55,8 @@ public class Recipe {
     public int getServing() {
         return serving;
     }
+
+    public String getImage() {
+        return image;
+    }
 }

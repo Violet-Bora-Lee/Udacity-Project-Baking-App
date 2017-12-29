@@ -152,7 +152,6 @@ public class ViewRecipeStepFragment extends Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // TODO 프래그먼트 상태저장 구현하기 Lesson2, Exercise 16참고
     }
 
     @Override

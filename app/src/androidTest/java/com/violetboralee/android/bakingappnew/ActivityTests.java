@@ -49,7 +49,7 @@ public class ActivityTests {
     }
 
     @Test
-    public void checkText_SelectARecipeActivity() {
+    public void selectARecipeActivityTest() {
         onView(withRecyclerView(R.id.recipes_recycler_view)
                 .atPositionOnView(1, R.id.list_item_recipe_name_text_view))
                 .check(matches(withText("Brownies")));
@@ -57,7 +57,7 @@ public class ActivityTests {
 
 
     @Test
-    public void checkPlayerIsVisible_ViewRecipeStepActivity() {
+    public void expPlayerVisibilityTest() {
         onView(ViewMatchers.withId(R.id.recipes_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(ViewMatchers.withId(R.id.rv_steps)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(allOf(instanceOf(SimpleExoPlayerView.class), withId(R.id.exo_player_view))).check(matches(isDisplayed()));

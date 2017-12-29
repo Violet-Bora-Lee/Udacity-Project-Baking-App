@@ -14,14 +14,17 @@
             >
         </android.support.v7.widget.RecyclerView>
 
-        <TextView
-            android:id="@+id/tv_error_message_display"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="@string/error_message"
-            android:textSize="22sp"
-            android:visibility="invisible"/>
+        <RelativeLayout
+            android:id="@+id/no_network"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+                <include
+                    layout="@layout/no_network"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+        </RelativeLayout>
 
 </FrameLayout>

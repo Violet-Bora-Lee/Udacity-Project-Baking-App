@@ -2,7 +2,10 @@ package com.violetboralee.android.bakingappnew.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.violetboralee.android.bakingappnew.IdlingResource.SimpleIdlingResource;
 import com.violetboralee.android.bakingappnew.R;
 import com.violetboralee.android.bakingappnew.model.Recipe;
 import com.violetboralee.android.bakingappnew.model.RecipeLab;
@@ -35,6 +39,18 @@ public class SelectARecipeFragment extends Fragment {
     private RecipeAdapter mAdapter;
     private TextView mErrorMessage;
 
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +70,8 @@ public class SelectARecipeFragment extends Fragment {
         mErrorMessage = (TextView) view.findViewById(R.id.tv_error_message_display);
 
         updateUI();
+
+        getIdlingResource();
 
         return view;
     }

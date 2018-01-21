@@ -10,6 +10,7 @@ import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,7 +156,7 @@ public class SelectARecipeFragment extends Fragment {
                 }
             }
 
-            if (thumbnailUrl != "" && thumbnailUrl != null) {
+            if (!TextUtils.isEmpty(thumbnailUrl)) { // thumbnailUrl != "" && thumbnailUrl != null
                 Uri builtUri = Uri.parse(thumbnailUrl).buildUpon().build();
                 Picasso.with(getContext()).load(builtUri).into(mImageView);
             } else if (imageUrl != "" && imageUrl != null) {

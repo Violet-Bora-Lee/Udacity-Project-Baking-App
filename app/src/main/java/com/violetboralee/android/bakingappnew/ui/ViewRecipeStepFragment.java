@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -51,29 +53,30 @@ import java.util.List;
 public class ViewRecipeStepFragment extends Fragment
         implements ExoPlayer.EventListener, View.OnClickListener {
     public static final String ARG_CURRENT_INDEX = "current_index";
+    public static final String RESUME_POSITION = "resume_position";
     private static final String LOG_TAG = ViewRecipeStepFragment.class.getSimpleName();
     private static final String ARG_RECIPE_ID = "recipe_id";
     private static final String ARG_STEP_ID = "step_id";
+    private static String videoUrl;
+    private static Uri videoUri;
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
     private ProgressBar mBufferingProgressBar;
-
     private ImageView mThumbnailImg;
-
     private TextView mFoodName;
     private TextView mShortDescription;
     private TextView mDescription;
-
-
     private List<Step> mSteps;
     private Step mStep;
     private int mRecipeId;
     private int mStepId;
     private int mSizeOfSteps;
     private int mCurrentIndex;
-
+    private boolean shouldAutoPlay;
+    private int resumeWindow;
+    private long resumePosition;
 
     public static ViewRecipeStepFragment newInstance(int recipeId, int stepId, int currentIndex) {
         Log.i(LOG_TAG, "--> newInstance");
@@ -108,6 +111,10 @@ public class ViewRecipeStepFragment extends Fragment
         mStep = RecipeLab.get(getActivity()).getStep(mRecipeId, mStepId, mCurrentIndex);
 
 
+        shouldAutoPlay = true;
+        if (savedInstanceState != null) {
+            resumePosition = savedInstanceState.getLong(RESUME_POSITION, C.TIME_UNSET);
+        }
         // Initialize the player view.
         mPlayerView = (SimpleExoPlayerView) v.findViewById(R.id.exo_player_view);
         mBufferingProgressBar = (ProgressBar) v.findViewById(R.id.pb_buffering_exo_player);
@@ -116,13 +123,14 @@ public class ViewRecipeStepFragment extends Fragment
         initializeMediaSession();
 
         // Initialize the player.
-        String videoURL = getVideoUri(mStep);
-        if (videoURL != "") {
-            initializePlayer(Uri.parse(videoURL));
-        } else if (videoURL == "") {
+        videoUrl = getVideoUri(mStep);
+        videoUri = Uri.parse(videoUrl);
+
+        if (TextUtils.isEmpty(videoUrl)) {   // videoUrl != ""
+            initializePlayer(videoUri);
+        } else if (videoUrl == "") {
             initializePlayer(null);
         }
-
 
         // Initialize the views.
         mFoodName = (TextView) v.findViewById(R.id.tv_food_name);
@@ -141,17 +149,38 @@ public class ViewRecipeStepFragment extends Fragment
         return v;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
         Log.i(LOG_TAG, "--> onResume");
         updateUI(mRecipeId, mStepId, mCurrentIndex);
+        initializePlayer(videoUri);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        resumePosition = mExoPlayer.getCurrentPosition();
+        releasePlayer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putLong(RESUME_POSITION, resumePosition);
+
     }
 
     @Override
@@ -295,8 +324,11 @@ public class ViewRecipeStepFragment extends Fragment
      * @param mediaUri The URI of the sample to play
      */
     private void initializePlayer(Uri mediaUri) {
+
+        boolean needNewPlayer = mExoPlayer == null;
+
         if (mediaUri != null) {
-            if (mExoPlayer == null) {
+            if (needNewPlayer) {
                 // Create an instance of the ExoPlayer.
                 TrackSelector trackSelector = new DefaultTrackSelector();
                 LoadControl loadControl = new DefaultLoadControl();
@@ -308,15 +340,46 @@ public class ViewRecipeStepFragment extends Fragment
                 MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                         getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
                 mExoPlayer.prepare(mediaSource);
-                mExoPlayer.setPlayWhenReady(true);
+                mExoPlayer.setPlayWhenReady(shouldAutoPlay);
+//                mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(
+//                        getResources(), R.drawable.no_video_available)
+//                );
+                boolean haveResumePosition = resumePosition != C.TIME_UNSET;
+                if (haveResumePosition) {
+                    mPlayerView.setPlayer(mExoPlayer);
+//                    mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(
+//                            getResources(), R.drawable.no_video_available)
+//                    );
+                    mExoPlayer.seekTo(resumePosition);
+                }
+            } else if (!needNewPlayer) {
+                mBufferingProgressBar.setVisibility(View.INVISIBLE);
+                // Create an instance of the ExoPlayer.
+//                TrackSelector trackSelector = new DefaultTrackSelector();
+//                LoadControl loadControl = new DefaultLoadControl();
+//                mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);                boolean haveResumePosition = resumePosition != C.TIME_UNSET;
+                boolean haveResumePosition = resumePosition != C.TIME_UNSET;
+                if (haveResumePosition) {
+                    mPlayerView.setPlayer(mExoPlayer);
+//                    mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(
+//                            getResources(), R.drawable.no_video_available)
+//                    );
+                    mExoPlayer.seekTo(resumePosition);
+                }
             }
         } else if (mediaUri == null) {
-            mBufferingProgressBar.setVisibility(View.INVISIBLE);
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
+            mExoPlayer.addListener(this);
+            // Prepare the MediaSource.
+//            String userAgent = Util.getUserAgent(getActivity(), "BakingApp");
+//            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
+//                    getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
+//            mExoPlayer.prepare(mediaSource);
+//            mExoPlayer.setPlayWhenReady(shouldAutoPlay);
             mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(
                     getResources(), R.drawable.no_video_available)
             );
@@ -324,20 +387,39 @@ public class ViewRecipeStepFragment extends Fragment
 
     }
 
+
     /**
      * Release ExoPlayer
      */
     private void releasePlayer() {
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
+        if (mExoPlayer != null) {
+            shouldAutoPlay = mExoPlayer.getPlayWhenReady();
+            updateResumePosition();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
+    private void updateResumePosition() {
+        resumeWindow = mExoPlayer.getCurrentWindowIndex();
+        resumePosition = mExoPlayer.getCurrentPosition();
     }
+
+    private void clearResumePosition() {
+//        /**
+//         * Represents an unset or unknown index.
+//         */
+//        public static final int INDEX_UNSET = -1;
+        resumeWindow = C.INDEX_UNSET;
+
+//        /**
+//         * Special constant representing an unset or unknown time or duration. Suitable for use in any
+//         * time base.
+//         */
+//        public static final long TIME_UNSET = Long.MIN_VALUE + 1;
+        resumePosition = C.TIME_UNSET;
+    }
+
 
     // ExoPlayer Event Listener
     @Override

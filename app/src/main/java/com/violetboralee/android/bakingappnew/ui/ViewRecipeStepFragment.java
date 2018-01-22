@@ -54,6 +54,7 @@ public class ViewRecipeStepFragment extends Fragment
         implements ExoPlayer.EventListener, View.OnClickListener {
     public static final String ARG_CURRENT_INDEX = "current_index";
     public static final String RESUME_POSITION = "resume_position";
+    private static final String SHOULD_AUTO_PLAY = "should_auto_play";
     private static final String LOG_TAG = ViewRecipeStepFragment.class.getSimpleName();
     private static final String ARG_RECIPE_ID = "recipe_id";
     private static final String ARG_STEP_ID = "step_id";
@@ -111,10 +112,15 @@ public class ViewRecipeStepFragment extends Fragment
         mStep = RecipeLab.get(getActivity()).getStep(mRecipeId, mStepId, mCurrentIndex);
 
 
-        shouldAutoPlay = true;
         if (savedInstanceState != null) {
+            Log.v(LOG_TAG, "savedInstanceState != null");
             resumePosition = savedInstanceState.getLong(RESUME_POSITION, C.TIME_UNSET);
+            shouldAutoPlay = savedInstanceState.getBoolean(SHOULD_AUTO_PLAY, false);
+        } else {
+            shouldAutoPlay = true;
         }
+
+
         // Initialize the player view.
         mPlayerView = (SimpleExoPlayerView) v.findViewById(R.id.exo_player_view);
         mBufferingProgressBar = (ProgressBar) v.findViewById(R.id.pb_buffering_exo_player);
@@ -126,9 +132,9 @@ public class ViewRecipeStepFragment extends Fragment
         videoUrl = getVideoUri(mStep);
         videoUri = Uri.parse(videoUrl);
 
-        if (TextUtils.isEmpty(videoUrl)) {   // videoUrl != ""
+        if (!TextUtils.isEmpty(videoUrl)) {   // videoUrl != ""
             initializePlayer(videoUri);
-        } else if (videoUrl == "") {
+        } else if (videoUrl == null || TextUtils.isEmpty(videoUrl)) {
             initializePlayer(null);
         }
 
@@ -180,6 +186,7 @@ public class ViewRecipeStepFragment extends Fragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(RESUME_POSITION, resumePosition);
+        outState.putBoolean(SHOULD_AUTO_PLAY, shouldAutoPlay);
 
     }
 
@@ -374,12 +381,6 @@ public class ViewRecipeStepFragment extends Fragment
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
             mExoPlayer.addListener(this);
-            // Prepare the MediaSource.
-//            String userAgent = Util.getUserAgent(getActivity(), "BakingApp");
-//            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-//                    getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
-//            mExoPlayer.prepare(mediaSource);
-//            mExoPlayer.setPlayWhenReady(shouldAutoPlay);
             mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(
                     getResources(), R.drawable.no_video_available)
             );

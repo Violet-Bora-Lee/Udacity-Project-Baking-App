@@ -23,10 +23,7 @@ import static com.violetboralee.android.bakingappnew.widget.UpdateIngredientServ
  */
 public class BakingWidgetProvider extends AppWidgetProvider {
 
-    public static final String REMOTEVIEW_INGREDIENT_LIST = "REMOTEVIEW_INGREDIENT_LIST";
-    public static final String REMOTEVIEW_BUNDLE = "REMOTEVIEW_BUNDLE";
     public static String ACTION_UPDATE_WIDGET = "android.appwidget.action.APPWIDGET_UPDATE2";
-
 
     static ArrayList<String> ingredientList = new ArrayList<>();
 

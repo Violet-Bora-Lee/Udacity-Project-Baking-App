@@ -1,7 +1,7 @@
 # Udacity-Project-Baking-App
 Udacity's Android Developer Nanodegree: Baking App Project
 
-Youtube [link](https://youtu.be/LD_s1KTq_wo) for this project
+Youtube [link](https://youtu.be/LD_s1KTq_wo) for this project (동영상 데모 링크)
 
 (한글 README는 아래에 있습니다.)
 
